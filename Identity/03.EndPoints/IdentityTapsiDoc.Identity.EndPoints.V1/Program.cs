@@ -22,6 +22,7 @@ builder.Services.AddDbContext<DataBaseContext>(
 builder.Services.AddAspNetIdentity()
     .AddCerberusIdentity(builder.Configuration);
 
+
 //builder.Services.AddIdentity<User, Role>()
 //.AddEntityFrameworkStores<DataBaseContext>()
 //    .AddDefaultTokenProviders()
