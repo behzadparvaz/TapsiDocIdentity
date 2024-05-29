@@ -16,6 +16,9 @@ COPY ["02.Infra/IdentityTapsiDoc.Identity.Infra.Data.Command/IdentityTapsiDoc.Id
 COPY ["02.Infra/IdentityTapsiDoc.Identity.Infra.Data.Query/IdentityTapsiDoc.Identity.Infra.Data.Query.csproj", "02.Infra/IdentityTapsiDoc.Identity.Infra.Data.Query/"]
 RUN dotnet restore "./03.EndPoints/IdentityTapsiDoc.Identity.EndPoints.V1/IdentityTapsiDoc.Identity.EndPoints.V1.csproj"
 COPY . .
+RUN dotnet tool install --global dotnet-ef
+RUN /root/.dotnet/tools/dotnet-ef migrations add InitialCreate
+RUN /root/.dotnet/tools/dotnet-ef database update
 WORKDIR "/src/03.EndPoints/IdentityTapsiDoc.Identity.EndPoints.V1"
 RUN dotnet build "./IdentityTapsiDoc.Identity.EndPoints.V1.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
