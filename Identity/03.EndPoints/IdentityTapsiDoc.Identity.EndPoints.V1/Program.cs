@@ -15,7 +15,6 @@ using System.Net.NetworkInformation;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
 builder.Services.AddDbContext<DataBaseContext>(
     p => p.UseSqlServer("Server=10.192.30.35;Database=Identitydb;MultipleActiveResultSets=true;User ID=sa;Password=Aliz@123;TrustServerCertificate=True; connect timeout=3000"));
