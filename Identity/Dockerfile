@@ -1,7 +1,6 @@
-#See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
+# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER app
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
@@ -14,12 +13,25 @@ COPY ["01.Core/IdentityTapsiDoc.Identity.Core.ApplicationService/IdentityTapsiDo
 COPY ["01.Core/IdentityTapsiDoc.Identity.Core.Domain/IdentityTapsiDoc.Identity.Core.Domain.csproj", "01.Core/IdentityTapsiDoc.Identity.Core.Domain/"]
 COPY ["02.Infra/IdentityTapsiDoc.Identity.Infra.Data.Command/IdentityTapsiDoc.Identity.Infra.Data.Command.csproj", "02.Infra/IdentityTapsiDoc.Identity.Infra.Data.Command/"]
 COPY ["02.Infra/IdentityTapsiDoc.Identity.Infra.Data.Query/IdentityTapsiDoc.Identity.Infra.Data.Query.csproj", "02.Infra/IdentityTapsiDoc.Identity.Infra.Data.Query/"]
+
+# Restore dependencies
 RUN dotnet restore "./03.EndPoints/IdentityTapsiDoc.Identity.EndPoints.V1/IdentityTapsiDoc.Identity.EndPoints.V1.csproj"
+
+# Copy all source files
 COPY . .
+
+# Install dotnet-ef tool
 RUN dotnet tool install --global dotnet-ef
-RUN /root/.dotnet/tools/dotnet-ef migrations add InitialCreate
-RUN /root/.dotnet/tools/dotnet-ef database update
+
+# Ensure global tools are available in the path
+ENV PATH="$PATH:/root/.dotnet/tools"
+
+# Apply migrations
 WORKDIR "/src/03.EndPoints/IdentityTapsiDoc.Identity.EndPoints.V1"
+RUN dotnet-ef migrations add InitialCreate
+RUN dotnet-ef database update
+
+# Build the project
 RUN dotnet build "./IdentityTapsiDoc.Identity.EndPoints.V1.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
