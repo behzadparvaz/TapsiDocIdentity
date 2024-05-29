@@ -1,0 +1,6 @@
+@IdentityTapsiDoc.Identity.EndPoints.V2_HostAddress = http://localhost:5224
+
+GET {{IdentityTapsiDoc.Identity.EndPoints.V2_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
