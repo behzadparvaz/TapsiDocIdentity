@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginUser
 {
-    public class LoginUserQuery//:IRequest<RegisterSummery>
+    public class LoginUserQuery :IRequest<RegisterSummery>
     {
         public string PhoneNumber { get; set; }
         public string Password { get; set; }

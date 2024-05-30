@@ -1,6 +1,7 @@
 using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.RegisterUser;
 using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.SetPassword;
 using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.Verification;
+using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginUser;
 using IdentityTapsiDoc.Identity.Core.Domain.Users.CommandSummery;
 using IdentityTapsiDoc.Identity.Core.Domain.Users.Repositories;
 using IdentityTapsiDoc.Identity.EndPoints.V1.Extensions;
@@ -8,6 +9,7 @@ using IdentityTapsiDoc.Identity.Infra.Data.Command.Users;
 using IdentityTapsiDoc.Identity.Infra.Data.Command.Users.DataContext;
 using IdentityTapsiDoc.Identity.Infra.Data.Query.Users;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ServiceStack;
 using ServiceStack.Redis;
@@ -17,45 +19,33 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddDbContext<DataBaseContext>(
-    p => p.UseSqlServer("Server=10.192.30.35;Database=Identitydb;MultipleActiveResultSets=true;User ID=sa;Password=Aliz@123;TrustServerCertificate=True; connect timeout=3000"));
+    p => p.UseSqlServer(builder.Configuration.GetSection("Connection:ConnectionString").Value));
 
 builder.Services.AddAspNetIdentity()
     .AddCerberusIdentity(builder.Configuration);
 
 
-//builder.Services.AddIdentity<User, Role>()
-//.AddEntityFrameworkStores<DataBaseContext>()
-//    .AddDefaultTokenProviders()
-//    .AddRoles<Role>();
+builder.Services.Configure<IdentityOptions>(option =>
+{
+    
+    //Password Setting
+    option.Password.RequireDigit = false;
+    option.Password.RequireLowercase = false;
+    option.Password.RequireNonAlphanumeric = false;//!@#$%^&*()_+
+    option.Password.RequireUppercase = false;
+    option.Password.RequiredLength = 3;
+    option.Password.RequiredUniqueChars = 1;
 
-//builder.Services
-//    .AddAuthentication(options =>
-//    {
-//        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-//        options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
-//        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-//    })
-//    .AddJwtBearer(options =>
-//    {
-//        options.SaveToken = true;
-//        options.RequireHttpsMetadata = false;
-//        options.TokenValidationParameters = new TokenValidationParameters
-//        {
-//            ValidateIssuer = false,
-//            ValidateAudience = false,
-//            ValidateLifetime = true,
-//            ValidateIssuerSigningKey = true,
-//            ClockSkew = TimeSpan.Zero,
-//            IssuerSigningKeys = ApplicationTokens.Tokens.Values,
-//            ValidIssuer = "",
-//            ValidAudiences = ApplicationTokens.Tokens.Keys
-//        };
-//    });
+    //Lokout Setting
+    option.Lockout.MaxFailedAccessAttempts = 3;
+    option.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMilliseconds(3);
 
-//builder.Services.Configure<IdentityOptions>(option => {
-//    option.Lockout.MaxFailedAccessAttempts = 5;
-//    option.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-//});
+    //SignIn Setting
+    option.SignIn.RequireConfirmedAccount = false;
+    option.SignIn.RequireConfirmedEmail = false;
+    option.SignIn.RequireConfirmedPhoneNumber = false;
+
+});
 
 
 builder.Services.AddSingleton(typeof(IRedisClientsManager),
@@ -70,7 +60,8 @@ builder.Services.AddMediatR(cfg =>
     .AddTransient<IUserQueryRepository, UserQueryRepository>()
     .AddTransient<IRequestHandler<RegisterUserCommand, RegisterSummery>, RegisterUserCommandHandler>()
     .AddTransient<IRequestHandler<VerificationCommand, RegisterSummery>, VerificationCommandHandler>()
-    .AddTransient<IRequestHandler<SetPasswordCommand, bool>, SetPasswordCommandHandler>();
+    .AddTransient<IRequestHandler<SetPasswordCommand, bool>, SetPasswordCommandHandler>()
+    .AddTransient<IRequestHandler<LoginUserQuery, RegisterSummery>, LoginUserQueryHandler>();
 
 
 builder.Services.AddControllers();

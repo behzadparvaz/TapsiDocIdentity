@@ -1,6 +1,7 @@
 ﻿using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.RegisterUser;
 using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.SetPassword;
 using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.Verification;
+using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginUser;
 using IdentityTapsiDoc.Identity.Core.Domain.Users.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -26,8 +27,17 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
         [HttpPost("/[controller]/Register")]
         public async Task<IActionResult> Post([FromBody] RegisterUserCommand command)
         {
-            var result = await this.mediator.Send(command);
-            return Ok(result);
+            try
+            {
+                var result = await this.mediator.Send(command);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+
+                return BadRequest(new {StatusCode = 500 , Message = ex.Message });
+            }
+
         }
 
         [HttpPost("/[controller]/VerifyCode")]
@@ -43,6 +53,23 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
         {
             var result = await this.mediator.Send(command);
             return Ok(result);
+        }
+
+
+        [HttpPost("/[controller]/Login")]
+        public async Task<IActionResult> Post([FromBody] LoginUserQuery query)
+        {
+            try
+            {
+                var result = await this.mediator.Send(query);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+
+                return BadRequest(new { StatusCode = 500, Message = ex.Message });
+            }
+
         }
 
 

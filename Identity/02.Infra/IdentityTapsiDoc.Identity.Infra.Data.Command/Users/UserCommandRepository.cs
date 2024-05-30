@@ -76,30 +76,39 @@ namespace IdentityTapsiDoc.Identity.Infra.Data.Command.Users
 
         public async Task<bool> SendOtpCode(string phoneNumber)
         {
-            var client = new HttpClient();
-            Random generator = new Random();
-            string rand = generator.Next(0, 1000000).ToString("D4");
+            try
+            {
+                var client = new HttpClient();
+                Random generator = new Random();
+                string rand = generator.Next(0, 1000000).ToString("D4");
 
-            Model model = new()
-            {
-                PhoneNumber = phoneNumber,
-                MessageBody = rand
-            };
-            SendSMS sendSMS = new();
-            sendSMS.model.Add(model);
-            var json = JsonConvert.SerializeObject(sendSMS, new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var result = await _fallbackPolicy.ExecuteAsync(() => _retryPolicy.ExecuteAsync(() =>
-                                                                  _circuitBreaker.ExecuteAsync(() =>
-                                                                   client.PostAsync($"{this.configuration.GetSection("SMS").GetSection(_baseSendSms).Value}", content)
-                                                                      )));
-            if (result.StatusCode == System.Net.HttpStatusCode.OK)
-            {
-                this.redisManager.Create(phoneNumber, rand.ToString(), TimeSpan.FromMinutes(3));
-                return true;
+                Model model = new()
+                {
+                    PhoneNumber = phoneNumber,
+                    MessageBody = rand
+                };
+                SendSMS sendSMS = new();
+                sendSMS.model.Add(model);
+                var json = JsonConvert.SerializeObject(sendSMS, new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var result = await _fallbackPolicy.ExecuteAsync(() => _retryPolicy.ExecuteAsync(() =>
+                                                                      _circuitBreaker.ExecuteAsync(() =>
+                                                                       client.PostAsync($"{this.configuration.GetSection("SMS").GetSection(_baseSendSms).Value}", content)
+                                                                          )));
+                if (result.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    this.redisManager.Create(phoneNumber, rand.ToString(), TimeSpan.FromMinutes(3));
+                    return true;
+                }
+                else
+                    throw new ArgumentException("Send SMS", "SMS Code Error, Please Try Agin");
             }
-            else
-                throw new ArgumentException("Send SMS", "SMS Code Error, Please Try Agin");
+            catch (Exception ex)
+            {
+
+                throw new ArgumentException("خطایی رخ داده است لطفا چند لحظه بعد مجدد تلاش نمایید");
+            }
+
         }
     }
 }
