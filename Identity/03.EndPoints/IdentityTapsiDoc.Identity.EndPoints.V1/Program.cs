@@ -1,6 +1,7 @@
 using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.RegisterUser;
 using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.SetPassword;
 using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.Verification;
+using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginByOtp;
 using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginUser;
 using IdentityTapsiDoc.Identity.Core.Domain.Users.CommandSummery;
 using IdentityTapsiDoc.Identity.Core.Domain.Users.Repositories;
@@ -61,7 +62,8 @@ builder.Services.AddMediatR(cfg =>
     .AddTransient<IRequestHandler<RegisterUserCommand, RegisterSummery>, RegisterUserCommandHandler>()
     .AddTransient<IRequestHandler<VerificationCommand, RegisterSummery>, VerificationCommandHandler>()
     .AddTransient<IRequestHandler<SetPasswordCommand, bool>, SetPasswordCommandHandler>()
-    .AddTransient<IRequestHandler<LoginUserQuery, RegisterSummery>, LoginUserQueryHandler>();
+    .AddTransient<IRequestHandler<LoginUserQuery, RegisterSummery>, LoginUserQueryHandler>()
+    .AddTransient<IRequestHandler<LoginByOtpQuery, RegisterSummery>, LoginByOtpQueryHandler>();
 
 
 builder.Services.AddControllers();
