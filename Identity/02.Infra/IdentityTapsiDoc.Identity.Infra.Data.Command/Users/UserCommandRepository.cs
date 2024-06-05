@@ -80,7 +80,9 @@ namespace IdentityTapsiDoc.Identity.Infra.Data.Command.Users
             {
                 var client = new HttpClient();
                 Random generator = new Random();
-                string rand = generator.Next(0, 1000000).ToString("D4");
+                string rand = generator.Next(0, 1000000).ToString("D6");
+                if (rand.Length < 6)
+                    rand = rand.PadRight(6, '0');
 
                 Model model = new()
                 {

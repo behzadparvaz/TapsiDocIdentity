@@ -1,4 +1,5 @@
-﻿using IdentityTapsiDoc.Identity.Core.Domain.Users.Entities;
+﻿using IdentityTapsiDoc.Identity.Core.Domain.Users.Configurations;
+using IdentityTapsiDoc.Identity.Core.Domain.Users.Entities;
 using IdentityTapsiDoc.Identity.Core.Domain.Users.LegacyIntegration;
 using IdentityTapsiDoc.Identity.Infra.Data.Command.Users.DataContext;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -10,7 +11,7 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Extensions;
 internal static class ApplicationDependencyRegistrator
 {
 
-    internal static IServiceCollection AddCerberusIdentity(
+    internal static IServiceCollection AddOIDCIdentity(
         this IServiceCollection services, IConfiguration configuration)
     {
 
@@ -33,7 +34,7 @@ internal static class ApplicationDependencyRegistrator
                     ValidateIssuerSigningKey = true,
                     ClockSkew = TimeSpan.Zero,
                     IssuerSigningKeys = ApplicationTokens.Tokens.Values,
-                    ValidIssuer = "http://cerberus.membership",
+                    ValidIssuer = "http://identity.membership",
                     ValidAudiences = ApplicationTokens.Tokens.Keys
                 };
             });
@@ -50,6 +51,32 @@ internal static class ApplicationDependencyRegistrator
         })
         .AddEntityFrameworkStores<DataBaseContext>()
         .AddDefaultTokenProviders();
+
+        return services;
+    }
+
+    internal static IServiceCollection AddTheIdentityServer(
+    this IServiceCollection services)
+    {
+        IIdentityServerBuilder identityBuilder = services.AddIdentityServer(options =>
+        {
+            options.Discovery.ShowIdentityScopes = false;
+            options.Discovery.ShowApiScopes = false;
+            options.Discovery.ShowClaims = false;
+            options.Discovery.ShowExtensionGrantTypes = true;
+            options.Endpoints.EnableJwtRequestUri = true;
+            options.Events.RaiseErrorEvents = true;
+            options.Events.RaiseFailureEvents = true;
+            options.Events.RaiseSuccessEvents = true;
+            options.Events.RaiseInformationEvents = true;
+            options.IssuerUri = "http://identity.membership";
+        })
+        .AddInMemoryApiScopes(IdentityConfiguration.GetApiScopes())
+        .AddDeveloperSigningCredential()
+        .AddInMemoryIdentityResources(IdentityConfiguration.GetIdentityResources())
+        .AddInMemoryClients(IdentityConfiguration.GetClients())
+        .AddAspNetIdentity<User>()
+        .AddJwtBearerClientAuthentication();
 
         return services;
     }

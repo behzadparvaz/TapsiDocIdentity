@@ -22,8 +22,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DataBaseContext>(
     p => p.UseSqlServer(builder.Configuration.GetSection("Connection:ConnectionString").Value));
 
-builder.Services.AddAspNetIdentity()
-    .AddCerberusIdentity(builder.Configuration);
+builder.Services
+    .AddAspNetIdentity()
+    .AddOIDCIdentity(builder.Configuration)
+    .AddTheIdentityServer();
 
 
 builder.Services.Configure<IdentityOptions>(option =>
@@ -81,7 +83,7 @@ var app = builder.Build();
 //}
 
 //app.UseHttpsRedirection();
-
+app.UseIdentityServer();
 app.UseAuthorization();
 app.UseAuthentication();
 app.MapControllers();
