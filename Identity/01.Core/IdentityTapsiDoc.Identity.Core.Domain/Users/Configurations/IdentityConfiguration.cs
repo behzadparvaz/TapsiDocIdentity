@@ -1,5 +1,6 @@
 ﻿using IdentityModel;
 using IdentityServer4.Models;
+using IdentityTapsiDoc.Identity.Core.Domain.Users.LegacyIntegration;
 using static IdentityModel.OidcConstants;
 
 namespace IdentityTapsiDoc.Identity.Core.Domain.Users.Configurations;
@@ -29,6 +30,15 @@ public sealed class IdentityConfiguration
                                 JwtClaimTypes.Role,
                                 JwtClaimTypes.Name,
                                 JwtClaimTypes.Email
+                            }),
+                        new ApiScope("VendorService",
+                            "Vendor Service",
+                            new List<string>
+                            {
+                                JwtClaimTypes.Subject,
+                                JwtClaimTypes.Role,
+                                JwtClaimTypes.Name,
+                                JwtClaimTypes.Email
                             })
                     };
     }
@@ -46,12 +56,23 @@ public sealed class IdentityConfiguration
                                 StandardScopes.Phone,
                                 StandardScopes.Email,
                                 "ProductService"
-                            })
+                            }),
+                        new ApiResource("VendorService", "Vendor Service",
+                            new List<string>
+                            {
+                                StandardScopes.OpenId,
+                                StandardScopes.Profile,
+                                StandardScopes.OfflineAccess,
+                                StandardScopes.Phone,
+                                StandardScopes.Email,
+                                "VendorService"
+                            }),
                     };
     }
 
     public static IEnumerable<Client> GetClients()
     {
+        var ss = ApplicationTokens.Tokens.Values;
         return new[]
         {
                  new Client
@@ -96,6 +117,28 @@ public sealed class IdentityConfiguration
                      IdentityTokenLifetime= 12 * 60 * 60, /* 12 hours */
                      RefreshTokenUsage = TokenUsage.ReUse,
                      RefreshTokenExpiration = TokenExpiration.Sliding,
+                 },
+                 // vendor management
+                 new Client
+                 {
+                     ClientId="a0c469be0a8f460cb223154c0238d5f0",
+                     ClientSecrets=new List<Secret>{ new Secret("b85e57c8dc7844729c6b58e46711260f".Sha256()) },
+                     RequireClientSecret  = true,
+                     AllowedGrantTypes=IdentityServer4.Models.GrantTypes.ClientCredentials,
+                     AllowedScopes =
+                            {
+                                StandardScopes.OpenId,
+                                StandardScopes.Profile,
+                                StandardScopes.Phone,
+                                StandardScopes.Email,
+                                StandardScopes.OfflineAccess,
+                                "VendorService"
+                            },
+                     ClientName = "VendorManagement",
+                     AccessTokenLifetime = 12 * 60 * 60, /* 12 hours */
+                     IdentityTokenLifetime= 12 * 60 * 60, /* 12 hours */
+                     RefreshTokenUsage = TokenUsage.ReUse,
+                     RefreshTokenExpiration = TokenExpiration.Sliding 
                  }
             };
     }
