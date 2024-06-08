@@ -108,7 +108,7 @@ namespace IdentityTapsiDoc.Identity.Infra.Data.Command.Users
             catch (Exception ex)
             {
 
-                throw new ArgumentException("خطایی رخ داده است لطفا چند لحظه بعد مجدد تلاش نمایید");
+                throw new ArgumentException("خطایی رخ داده است لطفا چند لحظه بعد مجدد تلاش نمایید" , ex.Message);
             }
 
         }
