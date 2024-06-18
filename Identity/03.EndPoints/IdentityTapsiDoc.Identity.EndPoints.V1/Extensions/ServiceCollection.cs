@@ -34,7 +34,7 @@ internal static class ApplicationDependencyRegistrator
                     ValidateIssuerSigningKey = true,
                     ClockSkew = TimeSpan.Zero,
                     IssuerSigningKeys = ApplicationTokens.Tokens.Values,
-                    ValidIssuer = "http://identity.membership",
+                    ValidIssuer = "https://tapsidoc.com",
                     ValidAudiences = ApplicationTokens.Tokens.Keys
                 };
             });
@@ -69,12 +69,13 @@ internal static class ApplicationDependencyRegistrator
             options.Events.RaiseFailureEvents = true;
             options.Events.RaiseSuccessEvents = true;
             options.Events.RaiseInformationEvents = true;
-            options.IssuerUri = "http://identity.membership";
+            options.IssuerUri = "https://tapsidoc.com";
         })
         .AddInMemoryApiScopes(IdentityConfiguration.GetApiScopes())
         .AddDeveloperSigningCredential()
         .AddInMemoryIdentityResources(IdentityConfiguration.GetIdentityResources())
         .AddInMemoryClients(IdentityConfiguration.GetClients())
+        .AddInMemoryApiResources(IdentityConfiguration.GetApiResources())
         .AddAspNetIdentity<User>()
         .AddJwtBearerClientAuthentication();
 

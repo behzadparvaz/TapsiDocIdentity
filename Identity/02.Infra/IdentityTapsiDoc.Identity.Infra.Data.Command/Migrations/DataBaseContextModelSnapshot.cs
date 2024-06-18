@@ -57,7 +57,7 @@ namespace IdentityTapsiDoc.Identity.Infra.Data.Command.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Lastname")
+                    b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

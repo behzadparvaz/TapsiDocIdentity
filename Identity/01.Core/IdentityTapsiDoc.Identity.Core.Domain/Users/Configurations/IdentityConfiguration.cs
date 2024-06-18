@@ -31,7 +31,7 @@ public sealed class IdentityConfiguration
                                 JwtClaimTypes.Name,
                                 JwtClaimTypes.Email
                             }),
-                        new ApiScope("VendorService",
+                        new ApiScope("V00001",
                             "Vendor Service",
                             new List<string>
                             {
@@ -47,7 +47,7 @@ public sealed class IdentityConfiguration
     {
         return new List<ApiResource>
                     {
-                        new ApiResource("ProductService", "Product Service",
+                        new ApiResource("ProductServiceApi", "Product Service",
                             new List<string>
                             {
                                 StandardScopes.OpenId,
@@ -55,9 +55,9 @@ public sealed class IdentityConfiguration
                                 StandardScopes.OfflineAccess,
                                 StandardScopes.Phone,
                                 StandardScopes.Email,
-                                "ProductService"
+                                "ProductServiceApi"
                             }),
-                        new ApiResource("VendorService", "Vendor Service",
+                        new ApiResource("V00001Api", "Vendor Service",
                             new List<string>
                             {
                                 StandardScopes.OpenId,
@@ -65,7 +65,7 @@ public sealed class IdentityConfiguration
                                 StandardScopes.OfflineAccess,
                                 StandardScopes.Phone,
                                 StandardScopes.Email,
-                                "VendorService"
+                                "V00001Api"
                             }),
                     };
     }
@@ -118,7 +118,7 @@ public sealed class IdentityConfiguration
                      RefreshTokenUsage = TokenUsage.ReUse,
                      RefreshTokenExpiration = TokenExpiration.Sliding,
                  },
-                 // vendor management
+                 // Vendor
                  new Client
                  {
                      ClientId="a0c469be0a8f460cb223154c0238d5f0",
@@ -132,9 +132,9 @@ public sealed class IdentityConfiguration
                                 StandardScopes.Phone,
                                 StandardScopes.Email,
                                 StandardScopes.OfflineAccess,
-                                "VendorService"
+                                "V00001"
                             },
-                     ClientName = "VendorManagement",
+                     ClientName = "V0000113aban",
                      AccessTokenLifetime = 12 * 60 * 60, /* 12 hours */
                      IdentityTokenLifetime= 12 * 60 * 60, /* 12 hours */
                      RefreshTokenUsage = TokenUsage.ReUse,

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IdentityTapsiDoc.Identity.Infra.Data.Command.Migrations
 {
     [DbContext(typeof(DataBaseContext))]
-    [Migration("20240528060154_InitDataBase")]
-    partial class InitDataBase
+    [Migration("20240617094508_initDB")]
+    partial class initDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -60,7 +60,7 @@ namespace IdentityTapsiDoc.Identity.Infra.Data.Command.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Lastname")
+                    b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
