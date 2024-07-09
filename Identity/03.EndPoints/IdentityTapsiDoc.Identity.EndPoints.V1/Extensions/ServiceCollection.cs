@@ -34,7 +34,7 @@ internal static class ApplicationDependencyRegistrator
                     ValidateIssuerSigningKey = true,
                     ClockSkew = TimeSpan.Zero,
                     IssuerSigningKeys = ApplicationTokens.Tokens.Values,
-                    ValidIssuer = "http://localhost:35200",
+                    ValidIssuer = "https://localhost:7276",
                     ValidAudiences = ApplicationTokens.Tokens.Keys
                 };
             });
@@ -69,7 +69,7 @@ internal static class ApplicationDependencyRegistrator
             options.Events.RaiseFailureEvents = true;
             options.Events.RaiseSuccessEvents = true;
             options.Events.RaiseInformationEvents = true;
-            options.IssuerUri = "http://localhost:35200";
+            options.IssuerUri = "https://localhost:7276";
         })
         .AddInMemoryApiScopes(IdentityConfiguration.GetApiScopes())
         .AddDeveloperSigningCredential()
@@ -77,6 +77,7 @@ internal static class ApplicationDependencyRegistrator
         .AddInMemoryClients(IdentityConfiguration.GetClients())
         .AddInMemoryApiResources(IdentityConfiguration.GetApiResources())
         .AddAspNetIdentity<User>()
+        .AddTestUsers(IdentityConfiguration.GetTestUsers())
         .AddJwtBearerClientAuthentication();
 
         return services;

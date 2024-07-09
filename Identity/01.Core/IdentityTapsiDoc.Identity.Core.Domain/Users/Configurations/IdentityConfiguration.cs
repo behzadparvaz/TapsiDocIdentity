@@ -1,5 +1,6 @@
 ﻿using IdentityModel;
 using IdentityServer4.Models;
+using IdentityServer4.Test;
 using IdentityTapsiDoc.Identity.Core.Domain.Users.LegacyIntegration;
 using static IdentityModel.OidcConstants;
 
@@ -39,8 +40,30 @@ public sealed class IdentityConfiguration
                                 JwtClaimTypes.Role,
                                 JwtClaimTypes.Name,
                                 JwtClaimTypes.Email
+                            }),
+                        new ApiScope("ZapDeliver",
+                            "Delivery Service",
+                            new List<string>
+                            {
+                                JwtClaimTypes.Subject,
+                                JwtClaimTypes.Role,
+                                JwtClaimTypes.Name,
+                                JwtClaimTypes.Email
                             })
                     };
+    }
+
+    public static List<TestUser> GetTestUsers()
+    {
+        return new List<TestUser>()
+    {
+        new TestUser
+        {
+            SubjectId = "1",
+            Username = "Zap",
+            Password = "Zap"
+        }
+    };
     }
 
     public static IEnumerable<ApiResource> GetApiResources()
@@ -67,6 +90,10 @@ public sealed class IdentityConfiguration
                                 StandardScopes.Email,
                                 "V00001Api"
                             }),
+                        new ApiResource("ZapDeliver")
+                            {
+                                ApiSecrets = {new Secret("secret".Sha256())}
+                            }
                     };
     }
 
@@ -121,8 +148,8 @@ public sealed class IdentityConfiguration
                  // Vendor
                  new Client
                  {
-                     ClientId="a0c469be0a8f460cb223154c0238d5f0",
-                     ClientSecrets=new List<Secret>{ new Secret("b85e57c8dc7844729c6b58e46711260f".Sha256()) },
+                     ClientId="13@baN",
+                     ClientSecrets=new List<Secret>{ new Secret("aB@an".Sha256()) },
                      RequireClientSecret  = true,
                      AllowedGrantTypes=IdentityServer4.Models.GrantTypes.ClientCredentials,
                      AllowedScopes =
@@ -139,6 +166,22 @@ public sealed class IdentityConfiguration
                      IdentityTokenLifetime= 12 * 60 * 60, /* 12 hours */
                      RefreshTokenUsage = TokenUsage.ReUse,
                      RefreshTokenExpiration = TokenExpiration.Sliding 
+                 },
+                 new Client
+                 {
+                     ClientId="Zap",
+                     ClientSecrets=new List<Secret>{ new Secret("Z@pExpre$$".Sha256()) },
+                     RequireClientSecret  = true,
+                     AllowedGrantTypes=IdentityServer4.Models.GrantTypes.ResourceOwnerPassword,
+                     AllowedScopes =
+                            {
+                                "ZapDeliver"
+                            },
+                     ClientName = "ZapExpress",
+                     AccessTokenLifetime = 12 * 60 * 60, /* 12 hours */
+                     IdentityTokenLifetime= 12 * 60 * 60, /* 12 hours */
+                     RefreshTokenUsage = TokenUsage.ReUse,
+                     RefreshTokenExpiration = TokenExpiration.Sliding
                  }
             };
     }
