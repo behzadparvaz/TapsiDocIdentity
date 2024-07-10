@@ -60,8 +60,8 @@ public sealed class IdentityConfiguration
         new TestUser
         {
             SubjectId = "1",
-            Username = "Zap",
-            Password = "Zap"
+            Username = "Z@p",
+            Password = "123456"
         }
     };
     }
