@@ -87,11 +87,9 @@ namespace IdentityTapsiDoc.Identity.Infra.Data.Command.Users
                 Model model = new()
                 {
                     PhoneNumber = phoneNumber,
-                    MessageBody = rand
+                    OtpCode = rand
                 };
-                SendSMS sendSMS = new();
-                sendSMS.model.Add(model);
-                var json = JsonConvert.SerializeObject(sendSMS, new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+                var json = JsonConvert.SerializeObject(model, new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 var result = await _fallbackPolicy.ExecuteAsync(() => _retryPolicy.ExecuteAsync(() =>
                                                                       _circuitBreaker.ExecuteAsync(() =>

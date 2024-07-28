@@ -33,7 +33,16 @@ public sealed class IdentityConfiguration
                                 JwtClaimTypes.Email
                             }),
                         new ApiScope("V00001",
-                            "Vendor Service",
+                            "VendorV1 Service",
+                            new List<string>
+                            {
+                                JwtClaimTypes.Subject,
+                                JwtClaimTypes.Role,
+                                JwtClaimTypes.Name,
+                                JwtClaimTypes.Email
+                            }),
+                        new ApiScope("V00002",
+                            "VendorV2 Service",
                             new List<string>
                             {
                                 JwtClaimTypes.Subject,
@@ -89,6 +98,16 @@ public sealed class IdentityConfiguration
                                 StandardScopes.Phone,
                                 StandardScopes.Email,
                                 "V00001Api"
+                            }),
+                        new ApiResource("V00002Api", "Vendor Service",
+                            new List<string>
+                            {
+                                StandardScopes.OpenId,
+                                StandardScopes.Profile,
+                                StandardScopes.OfflineAccess,
+                                StandardScopes.Phone,
+                                StandardScopes.Email,
+                                "V00002Api"
                             }),
                         new ApiResource("ZapDeliver")
                             {
@@ -148,8 +167,8 @@ public sealed class IdentityConfiguration
                  // Vendor
                  new Client
                  {
-                     ClientId="13@baN",
-                     ClientSecrets=new List<Secret>{ new Secret("aB@an".Sha256()) },
+                     ClientId="isar",
+                     ClientSecrets=new List<Secret>{ new Secret("Is@@r".Sha256()) },
                      RequireClientSecret  = true,
                      AllowedGrantTypes=IdentityServer4.Models.GrantTypes.ClientCredentials,
                      AllowedScopes =
@@ -161,7 +180,28 @@ public sealed class IdentityConfiguration
                                 StandardScopes.OfflineAccess,
                                 "V00001"
                             },
-                     ClientName = "V0000113aban",
+                     ClientName = "isar",
+                     AccessTokenLifetime = 12 * 60 * 60, /* 12 hours */
+                     IdentityTokenLifetime= 12 * 60 * 60, /* 12 hours */
+                     RefreshTokenUsage = TokenUsage.ReUse,
+                     RefreshTokenExpiration = TokenExpiration.Sliding
+                 },
+                 new Client
+                 {
+                     ClientId="13@baN",
+                     ClientSecrets=new List<Secret>{ new Secret("aB@an".Sha256()) },
+                     RequireClientSecret  = true,
+                     AllowedGrantTypes=IdentityServer4.Models.GrantTypes.ClientCredentials,
+                     AllowedScopes =
+                            {
+                                StandardScopes.OpenId,
+                                StandardScopes.Profile,
+                                StandardScopes.Phone,
+                                StandardScopes.Email,
+                                StandardScopes.OfflineAccess,
+                                "V00002"
+                            },
+                     ClientName = "13aban",
                      AccessTokenLifetime = 12 * 60 * 60, /* 12 hours */
                      IdentityTokenLifetime= 12 * 60 * 60, /* 12 hours */
                      RefreshTokenUsage = TokenUsage.ReUse,

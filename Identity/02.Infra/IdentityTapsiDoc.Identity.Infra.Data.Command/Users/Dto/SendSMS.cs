@@ -17,6 +17,6 @@ namespace IdentityTapsiDoc.Identity.Infra.Data.Command.Users.Dto
     public class Model
     {
         public string PhoneNumber { get; set; }
-        public string MessageBody { get; set; }
+        public string OtpCode { get; set; }
     }
 }

@@ -34,7 +34,7 @@ internal static class ApplicationDependencyRegistrator
                     ValidateIssuerSigningKey = true,
                     ClockSkew = TimeSpan.Zero,
                     IssuerSigningKeys = ApplicationTokens.Tokens.Values,
-                    ValidIssuer = "https://localhost:7276",
+                    ValidIssuer = "http://localhost:35200",
                     ValidAudiences = ApplicationTokens.Tokens.Keys
                 };
             });
@@ -69,7 +69,7 @@ internal static class ApplicationDependencyRegistrator
             options.Events.RaiseFailureEvents = true;
             options.Events.RaiseSuccessEvents = true;
             options.Events.RaiseInformationEvents = true;
-            options.IssuerUri = "https://localhost:7276";
+            options.IssuerUri = "http://localhost:35200";
         })
         .AddInMemoryApiScopes(IdentityConfiguration.GetApiScopes())
         .AddDeveloperSigningCredential()
