@@ -95,7 +95,7 @@ namespace IdentityTapsiDoc.Identity.Infra.Data.Command.Users
                                                                       _circuitBreaker.ExecuteAsync(() =>
                                                                        client.PostAsync($"{this.configuration.GetSection("SMS").GetSection(_baseSendSms).Value}", content)
                                                                           )));
-                if (result.StatusCode == System.Net.HttpStatusCode.OK)
+                if (result.StatusCode == System.Net.HttpStatusCode.Created)
                 {
                     this.redisManager.Create(phoneNumber, rand.ToString(), TimeSpan.FromMinutes(3));
                     return true;
