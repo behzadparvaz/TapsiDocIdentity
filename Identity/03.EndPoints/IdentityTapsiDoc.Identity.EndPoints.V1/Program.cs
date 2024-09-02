@@ -3,6 +3,7 @@ using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.SetPasswo
 using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.Verification;
 using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginByOtp;
 using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginUser;
+using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginWithTapsiSSO;
 using IdentityTapsiDoc.Identity.Core.Domain.Users.CommandSummery;
 using IdentityTapsiDoc.Identity.Core.Domain.Users.Repositories;
 using IdentityTapsiDoc.Identity.EndPoints.V1.Extensions;
@@ -30,7 +31,7 @@ builder.Services
 
 builder.Services.Configure<IdentityOptions>(option =>
 {
-    
+
     //Password Setting
     option.Password.RequireDigit = false;
     option.Password.RequireLowercase = false;
@@ -65,7 +66,8 @@ builder.Services.AddMediatR(cfg =>
     .AddTransient<IRequestHandler<VerificationCommand, RegisterSummery>, VerificationCommandHandler>()
     .AddTransient<IRequestHandler<SetPasswordCommand, bool>, SetPasswordCommandHandler>()
     .AddTransient<IRequestHandler<LoginUserQuery, RegisterSummery>, LoginUserQueryHandler>()
-    .AddTransient<IRequestHandler<LoginByOtpQuery, RegisterSummery>, LoginByOtpQueryHandler>();
+    .AddTransient<IRequestHandler<LoginByOtpQuery, RegisterSummery>, LoginByOtpQueryHandler>()
+    .AddTransient<IRequestHandler<LoginWithTapsiSSOQuery, RegisterSummery>, LoginWithTapsiSSOQHandler>();
 
 
 builder.Services.AddControllers();
@@ -78,8 +80,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+app.UseSwagger();
+app.UseSwaggerUI();
 //}
 
 //app.UseHttpsRedirection();

@@ -3,6 +3,7 @@ using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.SetPasswo
 using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.Verification;
 using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginByOtp;
 using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginUser;
+using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginWithTapsiSSO;
 using IdentityTapsiDoc.Identity.Core.Domain.Users.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -97,7 +98,19 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
             }
 
         }
-
+        [HttpPost("/[controller]/LoginWithTapsiSSO")]
+        public async Task<IActionResult> Post(LoginWithTapsiSSOQuery query)
+        {
+            try
+            {
+                var result = await this.mediator.Send(query);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { StatusCode = 500, Message = ex.Message });
+            }
+        }
 
     }
 }
