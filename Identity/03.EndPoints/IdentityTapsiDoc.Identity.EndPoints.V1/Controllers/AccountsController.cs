@@ -36,7 +36,7 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
             catch (ArgumentException ex)
             {
 
-                return BadRequest(new {StatusCode = 500 , Message = ex.Message });
+                return BadRequest(new { StatusCode = 500, Message = ex.Message });
             }
 
         }
@@ -96,6 +96,11 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
                 return BadRequest(new { StatusCode = 500, Message = ex.Message });
             }
 
+        }
+        [HttpPost("/[controller]/TapsiSsoLogout")]
+        public async Task<IActionResult> Post()
+        {
+            return Ok();
         }
 
 

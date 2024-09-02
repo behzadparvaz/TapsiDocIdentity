@@ -1,4 +1,5 @@
-﻿using IdentityTapsiDoc.Identity.Core.Domain.Users.CommandSummery;
+﻿using IdentityTapsiDoc.Identity.Core.Domain.Contracts.Services;
+using IdentityTapsiDoc.Identity.Core.Domain.Users.CommandSummery;
 using IdentityTapsiDoc.Identity.Core.Domain.Users.Entities;
 using IdentityTapsiDoc.Identity.Core.Domain.Users.Repositories;
 using MediatR;
@@ -16,63 +17,31 @@ namespace IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.Regis
     {
         private readonly UserManager<User> _userManager;
         private readonly IUserCommandRepository command;
+        IIdentityService _identityService;
 
-        public RegisterUserCommandHandler(UserManager<User>  userManager , IUserCommandRepository command)
+        public RegisterUserCommandHandler(UserManager<User> userManager, IUserCommandRepository command, IIdentityService identityService)
         {
             this._userManager = userManager;
             this.command = command;
+            _identityService = identityService;
         }
 
         public async Task<RegisterSummery> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
-            User user = new()
+
+            var user = await _identityService.RegisterAsync(request.PhoneNumber);
+            await command.SendOtpCode(request.PhoneNumber);
+
+            return new RegisterSummery
             {
-                UserName = request.PhoneNumber,
+                HasPassword = user.PasswordHash != null,
+                IsActive = true,
+                IsRegister = false, //TODO: Why is it needed?
                 PhoneNumber = request.PhoneNumber,
-                FirstName = string.Empty,
-                LastName = string.Empty
+                StatusCode = 200,
+                Message = "succeeded",
+                Token = string.Empty
             };
-            
-            var result = await _userManager.FindByNameAsync(request.PhoneNumber);
-            if (result == null)
-            {
-                await this.command.SendOtpCode(request.PhoneNumber);
-                return new RegisterSummery
-                {
-                    HasPassword = false,
-                    IsActive = true,
-                    IsRegister = false,
-                    PhoneNumber = request.PhoneNumber,
-                    StatusCode = 200,
-                    Message = "succeeded",
-                    Token = string.Empty
-                };
-            }
-            else
-            {
-                if(result.PasswordHash != null)
-                    return new RegisterSummery
-                    {
-                        HasPassword = true,
-                        IsActive = true,
-                        IsRegister = true,
-                        PhoneNumber = request.PhoneNumber,
-                        StatusCode = 200,
-                        Message = "succeeded",
-                        Token = string.Empty
-                    };
-                await this.command.SendOtpCode(request.PhoneNumber);
-                return new RegisterSummery
-                {
-                    HasPassword = false,
-                    IsActive = true,
-                    IsRegister = true,
-                    PhoneNumber = request.PhoneNumber,
-                    StatusCode = 200,
-                    Message = "succeeded",
-                    Token = string.Empty
-                };
-            }
         }
     }
 }
