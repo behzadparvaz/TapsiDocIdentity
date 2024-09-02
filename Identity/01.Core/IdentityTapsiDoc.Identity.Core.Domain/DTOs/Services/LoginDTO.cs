@@ -1,8 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿namespace IdentityTapsiDoc.Identity.Core.Domain.DTOs.Services;
 
-namespace IdentityTapsiDoc.Identity.Infra.Services.Services.ServiceImpls.IdentityService.Models;
-
-public class GetTokenOutput
+public class LoginOutput
 {
     public required string AccessToken { get; set; }
     public int ExpiresIn { get; set; }

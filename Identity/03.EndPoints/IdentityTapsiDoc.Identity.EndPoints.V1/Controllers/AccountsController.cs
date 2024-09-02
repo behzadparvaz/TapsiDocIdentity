@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
+using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginWithTapsiSSO;
 
 namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
 {
@@ -35,10 +36,8 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
             }
             catch (ArgumentException ex)
             {
-
-                return BadRequest(new {StatusCode = 500 , Message = ex.Message });
+                return BadRequest(new { StatusCode = 500, Message = ex.Message });
             }
-
         }
 
         [HttpPost("/[controller]/VerifyCode")]
@@ -51,10 +50,8 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
             }
             catch (ArgumentException ex)
             {
-
                 return BadRequest(new { StatusCode = 500, Message = ex.Message });
             }
-
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
@@ -76,10 +73,8 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
             }
             catch (ArgumentException ex)
             {
-
                 return BadRequest(new { StatusCode = 500, Message = ex.Message });
             }
-
         }
 
         [HttpPost("/[controller]/LoginWithOtp")]
@@ -92,12 +87,22 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
             }
             catch (ArgumentException ex)
             {
-
                 return BadRequest(new { StatusCode = 500, Message = ex.Message });
             }
-
         }
 
-
+        [HttpPost("/[controller]/LoginWithTapsiSSO")]
+        public async Task<IActionResult> Post(LoginWithTapsiSSOQuery query)
+        {
+            try
+            {
+                var result = await this.mediator.Send(query);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { StatusCode = 500, Message = ex.Message });
+            }
+        }
     }
 }

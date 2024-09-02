@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\02.Infra\IdentityTapsiDoc.Identity.Infra.Services\IdentityTapsiDoc.Identity.Infra.Services.csproj" />
     <ProjectReference Include="..\IdentityTapsiDoc.Identity.Core.Domain\IdentityTapsiDoc.Identity.Core.Domain.csproj" />
   </ItemGroup>
 

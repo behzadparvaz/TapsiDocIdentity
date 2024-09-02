@@ -8,6 +8,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using IdentityModel.Client;
+using IdentityTapsiDoc.Identity.Core.Domain.Contracts.Services;
+using IdentityTapsiDoc.Identity.Core.Domain.Enums;
+using IdentityTapsiDoc.Identity.Infra.Services.IdentityServer.CustomConfig.GrantTypes;
 
 namespace IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginByOtp
 {
@@ -15,11 +19,16 @@ namespace IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginB
     {
         private readonly UserManager<User> _userManager;
         private readonly IUserCommandRepository command;
+        private readonly IHttpClientFactory _httpClientFactory;
+        private IIdentityService _identityService;
 
-        public LoginByOtpQueryHandler(UserManager<User> userManager , IUserCommandRepository command)
+        public LoginByOtpQueryHandler(UserManager<User> userManager, IUserCommandRepository command,
+            IHttpClientFactory httpClientFactory, IIdentityService identityService)
         {
             this._userManager = userManager;
             this.command = command;
+            _httpClientFactory = httpClientFactory;
+            _identityService = identityService;
         }
 
         public async Task<RegisterSummery> Handle(LoginByOtpQuery request, CancellationToken cancellationToken)

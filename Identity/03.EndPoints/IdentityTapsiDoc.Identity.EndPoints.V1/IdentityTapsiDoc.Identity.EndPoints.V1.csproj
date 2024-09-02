@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.5">
       <PrivateAssets>all</PrivateAssets>
@@ -25,6 +26,7 @@
     <ProjectReference Include="..\..\01.Core\IdentityTapsiDoc.Identity.Core.Domain\IdentityTapsiDoc.Identity.Core.Domain.csproj" />
     <ProjectReference Include="..\..\02.Infra\IdentityTapsiDoc.Identity.Infra.Data.Command\IdentityTapsiDoc.Identity.Infra.Data.Command.csproj" />
     <ProjectReference Include="..\..\02.Infra\IdentityTapsiDoc.Identity.Infra.Data.Query\IdentityTapsiDoc.Identity.Infra.Data.Query.csproj" />
+    <ProjectReference Include="..\..\02.Infra\IdentityTapsiDoc.Identity.Infra.Services\IdentityTapsiDoc.Identity.Infra.Services.csproj" />
   </ItemGroup>
 
 </Project>

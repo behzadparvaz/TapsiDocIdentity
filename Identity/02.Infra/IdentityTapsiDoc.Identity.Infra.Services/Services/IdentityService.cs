@@ -1,69 +1,39 @@
-﻿using IdentityModel.Client;
+﻿using AutoMapper;
 using IdentityTapsiDoc.Identity.Core.Domain.Contracts.Services;
+using IdentityTapsiDoc.Identity.Core.Domain.DTOs.Services;
 using IdentityTapsiDoc.Identity.Core.Domain.Enums;
 using IdentityTapsiDoc.Identity.Core.Domain.Users.Entities;
-using IdentityTapsiDoc.Identity.Infra.Services.IdentityServer.CustomConfig.GrantTypes;
+using IdentityTapsiDoc.Identity.Infra.Services.Services.ServiceImpls.IdentityService;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 
-namespace IdentityTapsiDoc.Identity.Infra.Services;
+namespace IdentityTapsiDoc.Identity.Infra.Services.Services;
 
 public class IdentityService : IIdentityService
 {
     private UserManager<User> _userManager;
-    private IHttpClientFactory _httpClientFactory;
-    private IConfiguration _configuration;
+    private IIdentityServiceFactory _identityServiceFactory;
+    IMapper _mapper;
 
-    public IdentityService(UserManager<User> userManager, IHttpClientFactory httpClientFactory,
-        IConfiguration configuration)
+    public IdentityService(UserManager<User> userManager, IIdentityServiceFactory identityServiceFactory, IMapper mapper)
     {
         _userManager = userManager;
-        _httpClientFactory = httpClientFactory;
-        _configuration = configuration;
+        _identityServiceFactory = identityServiceFactory;
+        _mapper = mapper;
     }
 
-    public async Task GetToken(string userName, AuthenticationType authType)
+    public async Task<string> GetUserInfo(string accessToken)
     {
-        var user = await _userManager.FindByNameAsync(userName);
-        if (user == null)
-        {
-            throw new Exception("کاربر یافت نشد");
-        }
+        var strategy = _identityServiceFactory.GetIdentityServiceStrategy(AuthenticationType.TapsiSso);
+        var res = await strategy.GetUserInfo(accessToken);
+        return res.PhoneNumber;
+    }
 
-        var httpClient = _httpClientFactory.CreateClient();
+    public async Task<LoginOutput> Login(string userName, AuthenticationType authType)
+    {
+        var strategy = _identityServiceFactory.GetIdentityServiceStrategy(authType);
+        var tokenOutput = await strategy.GetToken(userName);
+        var result = _mapper.Map<LoginOutput>(tokenOutput);
+        return result;
 
-        var baseUrl = _configuration["IdentityServerConf:BaseUrl"] ??
-                      throw new NullReferenceException("IDENTITY SERVER URL NOTFOUND");
-
-        var clientId = _configuration["IdentityServerConf:ClientId"] ??
-                       throw new NullReferenceException("IDENTITY SERVER CLIENT ID NOTFOUND");
-
-        var clientSecret = _configuration["IdentityServerConf:ClientSecret"] ??
-                           throw new NullReferenceException("IDENTITY SERVER CLIENT SECRET NOTFOUND");
-
-        var discoveryDocument = await httpClient.GetDiscoveryDocumentAsync(baseUrl);
-        if (discoveryDocument.IsError)
-        {
-            throw new ArgumentException("IDENTITY SERVER GET DISCOVERY ERR");
-        }
-
-        var tokenResponse = await httpClient.RequestTokenAsync(
-            new ClientCredentialsTokenRequest()
-            {
-                Address = discoveryDocument.TokenEndpoint,
-                ClientId = clientId,
-                ClientSecret = clientSecret,
-                GrantType = CustomGrantType.SecurityStamp,
-                Parameters =
-                {
-                    { "SecurityStamp", user.SecurityStamp },
-                    { "UserName", user.UserName },
-                    { "AuthType", authType.ToString() }
-                }
-            });
-        if (tokenResponse.IsError)
-        {
-            throw new ArgumentException("IDENTITY SERVER GET TOKEN ERR");
-        }
     }
 }

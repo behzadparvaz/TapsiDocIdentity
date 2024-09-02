@@ -1,4 +1,6 @@
-﻿using IdentityTapsiDoc.Identity.Core.Domain.Users.CommandSummery;
+﻿using IdentityTapsiDoc.Identity.Core.Domain.Contracts.Services;
+using IdentityTapsiDoc.Identity.Core.Domain.Enums;
+using IdentityTapsiDoc.Identity.Core.Domain.Users.CommandSummery;
 using IdentityTapsiDoc.Identity.Core.Domain.Users.Entities;
 using IdentityTapsiDoc.Identity.Core.Domain.Users.LegacyIntegration;
 using IdentityTapsiDoc.Identity.Core.Domain.Users.Repositories;
@@ -15,13 +17,15 @@ namespace IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.Verif
 {
     public class VerificationCommandHandler : IRequestHandler<VerificationCommand, RegisterSummery>
     {
+        private IIdentityService _identityService;
         private readonly IUserQueryRepository query;
         private readonly UserManager<User> userManager;
 
-        public VerificationCommandHandler(IUserQueryRepository query, UserManager<User> userManager)
+        public VerificationCommandHandler(IUserQueryRepository query, UserManager<User> userManager, IIdentityService identityService)
         {
             this.query = query;
             this.userManager = userManager;
+            _identityService = identityService;
         }
 
         public async Task<RegisterSummery> Handle(VerificationCommand request, CancellationToken cancellationToken)
@@ -53,16 +57,8 @@ namespace IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.Verif
                 }
             }
 
-            var token = new JwtTokenBuilder()
-                    .AddSecurityKey(ApplicationTokens.Tokens["TapsiDocApp"])
-                    .AddSubject(request.PhoneNumber)
-                    .AddIssuer("Tapsi")
-                    .AddAudience("TapsiDocApp")
-                    .AddClaim(ClaimTypes.Name, request.PhoneNumber)
-                    .AddClaim(ClaimTypes.Role, "User")
-                    .AddClaim(ClaimTypes.MobilePhone, request.PhoneNumber)
-                    .AddExpiry(24 * 60 * 3650)
-                    .Build();
+            var tokenRes = await _identityService.Login(findUser.UserName, AuthenticationType.TapsiDr);
+            
             return new RegisterSummery
             {
                 HasPassword = false,
@@ -71,7 +67,7 @@ namespace IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.Verif
                 PhoneNumber = request.PhoneNumber,
                 StatusCode = 200,
                 Message = "succeeded",
-                Token = token.Value
+                Token = tokenRes.AccessToken
             };
         }
     }

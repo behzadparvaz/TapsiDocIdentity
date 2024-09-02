@@ -1,15 +1,15 @@
 ﻿using IdentityServer4.Validation;
 
-namespace IdentityTapsiDoc.Identity.EndPoints.V1.IdentityServer.CustomConfig.Validators;
+namespace IdentityTapsiDoc.Identity.Infra.Services.IdentityServer.CustomConfig.Validators;
 
-public class CustomTokenValidator:ICustomTokenValidator
+public class CustomTokenValidator : ITokenValidator
 {
-    public Task<TokenValidationResult> ValidateAccessTokenAsync(TokenValidationResult result)
+    public Task<TokenValidationResult> ValidateAccessTokenAsync(string token, string expectedScope = null)
     {
         throw new NotImplementedException();
     }
 
-    public Task<TokenValidationResult> ValidateIdentityTokenAsync(TokenValidationResult result)
+    public Task<TokenValidationResult> ValidateIdentityTokenAsync(string token, string clientId = null, bool validateLifetime = true)
     {
         throw new NotImplementedException();
     }

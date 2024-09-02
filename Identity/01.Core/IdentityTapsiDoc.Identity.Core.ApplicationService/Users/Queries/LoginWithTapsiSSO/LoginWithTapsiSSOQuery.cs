@@ -1,6 +1,9 @@
-﻿namespace IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginWithTapsiSSO;
+﻿using IdentityTapsiDoc.Identity.Core.Domain.Users.CommandSummery;
+using MediatR;
 
-public class LoginWithTapsiSSOQuery
+namespace IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginWithTapsiSSO;
+
+public class LoginWithTapsiSSOQuery : IRequest<RegisterSummery>
 {
-    
+    public required string Code { get; set; }
 }
