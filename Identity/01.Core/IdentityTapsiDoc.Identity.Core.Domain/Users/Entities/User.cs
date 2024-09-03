@@ -11,5 +11,6 @@ namespace IdentityTapsiDoc.Identity.Core.Domain.Users.Entities
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string? TapsiUserId { get; set; }
     }
 }

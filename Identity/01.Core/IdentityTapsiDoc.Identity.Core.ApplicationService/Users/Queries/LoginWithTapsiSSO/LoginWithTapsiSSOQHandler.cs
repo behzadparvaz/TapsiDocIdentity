@@ -5,8 +5,10 @@ using IdentityModel.Client;
 using IdentityServer4.EntityFramework.Entities;
 using IdentityServer4.Models;
 using IdentityTapsiDoc.Identity.Core.Domain.Users.CommandSummery;
+using IdentityTapsiDoc.Identity.Core.Domain.Users.Entities;
 using IdentityTapsiDoc.Identity.Core.Domain.Users.LegacyIntegration;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -16,10 +18,13 @@ namespace IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginW
 public class LoginWithTapsiSSOQHandler : IRequestHandler<LoginWithTapsiSSOQuery, RegisterSummery>
 {
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly UserManager<User> _userManager;
 
-    public LoginWithTapsiSSOQHandler(IHttpClientFactory httpClientFactory)
+
+    public LoginWithTapsiSSOQHandler(IHttpClientFactory httpClientFactory, UserManager<User> userManager)
     {
         _httpClientFactory = httpClientFactory;
+        _userManager = userManager;
     }
 
     public async Task<RegisterSummery> Handle(LoginWithTapsiSSOQuery request,
@@ -59,9 +64,10 @@ public class LoginWithTapsiSSOQHandler : IRequestHandler<LoginWithTapsiSSOQuery,
                 .Select(z => z.Value)
                 .FirstOrDefault("");
 
+        //+989398200778
         var phoneNumber = claims.Where(z => z.Type == "phone_number")
                 .Select(z => z.Value)
-                .FirstOrDefault("");
+                .FirstOrDefault("").Replace("+98", "0");
 
         var expireTime = claims.Where(z => z.Type == "exp")
                 .Select(z => z.Value)
@@ -78,7 +84,13 @@ public class LoginWithTapsiSSOQHandler : IRequestHandler<LoginWithTapsiSSOQuery,
                           .AddExpiry(TimeSpan.FromSeconds(int.Parse(expireTime)).Minutes) // 30 Min
                           .Build();
 
-        //TODO: save globalUserId in database
+        var user = _userManager.Users.FirstOrDefault(z => z.PhoneNumber == phoneNumber);
+        if (user == null)
+        {
+            //TODO:Create User
+        }
+        user.TapsiUserId = globalUserId;
+        await _userManager.UpdateAsync(user);
         return new RegisterSummery
         {
             HasPassword = false,
