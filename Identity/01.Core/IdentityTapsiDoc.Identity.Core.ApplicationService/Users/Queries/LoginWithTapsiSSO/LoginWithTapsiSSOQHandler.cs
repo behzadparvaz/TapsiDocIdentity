@@ -74,9 +74,10 @@ public class LoginWithTapsiSSOQHandler : IRequestHandler<LoginWithTapsiSSOQuery,
                           .AddClaim(ClaimTypes.Name, phoneNumber)
                           .AddClaim(ClaimTypes.Role, "User")
                           .AddClaim(ClaimTypes.MobilePhone, phoneNumber)
-                          .AddExpiry(int.Parse(expireTime)) //TODO: Check ex time
+                          .AddExpiry(TimeSpan.FromSeconds(int.Parse(expireTime)).Minutes) // 30 Min
                           .Build();
 
+        //TODO: save globalUserId in database
         return new RegisterSummery
         {
             HasPassword = false,
