@@ -40,6 +40,7 @@ namespace IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginU
                             .AddClaim(ClaimTypes.MobilePhone, request.PhoneNumber)
                             .AddExpiry(24 * 60 * 3650)
                             .Build();
+
                 return new RegisterSummery
                 {
                     HasPassword = false,

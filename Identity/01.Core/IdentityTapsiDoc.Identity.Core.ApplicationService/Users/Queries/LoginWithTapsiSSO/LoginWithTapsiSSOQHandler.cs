@@ -54,6 +54,7 @@ public class LoginWithTapsiSSOQHandler : IRequestHandler<LoginWithTapsiSSOQuery,
 
         var tokenReader = new JwtSecurityTokenHandler().ReadJwtToken(tokenResponse.IdentityToken);
         var claims = tokenReader.Claims;
+
         var globalUserId = claims.Where(z => z.Type == "global_user_id")
                 .Select(z => z.Value)
                 .FirstOrDefault("");
