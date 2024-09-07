@@ -7,6 +7,7 @@ using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginWithT
 using IdentityTapsiDoc.Identity.Core.Domain.Users.CommandSummery;
 using IdentityTapsiDoc.Identity.Core.Domain.Users.Repositories;
 using IdentityTapsiDoc.Identity.EndPoints.V1.Extensions;
+using IdentityTapsiDoc.Identity.Infra;
 using IdentityTapsiDoc.Identity.Infra.Data.Command.Users;
 using IdentityTapsiDoc.Identity.Infra.Data.Command.Users.DataContext;
 using IdentityTapsiDoc.Identity.Infra.Data.Query.Users;
@@ -16,7 +17,6 @@ using Microsoft.EntityFrameworkCore;
 using ServiceStack;
 using ServiceStack.Redis;
 using System.Net.NetworkInformation;
-
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -28,6 +28,7 @@ builder.Services
     .AddOIDCIdentity(builder.Configuration)
     .AddTheIdentityServer();
 
+builder.Services.AddInfrastructureServices(builder.Configuration);
 
 builder.Services.Configure<IdentityOptions>(option =>
 {
