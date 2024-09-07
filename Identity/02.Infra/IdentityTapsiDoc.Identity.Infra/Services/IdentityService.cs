@@ -34,7 +34,9 @@ namespace IdentityTapsiDoc.Identity.Infra.Services
             user = new User()
             {
                 UserName = phoneNumber,
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                FirstName = "",
+                LastName = ""
             };
 
             var createUserRes = await _userManager.CreateAsync(user);

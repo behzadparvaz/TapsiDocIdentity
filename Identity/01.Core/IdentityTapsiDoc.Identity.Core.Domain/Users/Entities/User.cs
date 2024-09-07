@@ -10,8 +10,8 @@ namespace IdentityTapsiDoc.Identity.Core.Domain.Users.Entities
 {
     public class User : IdentityUser
     {
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
 
         [MaxLength(50)]
         public string? TapsiUserId { get; set; }
