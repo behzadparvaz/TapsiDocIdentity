@@ -95,15 +95,31 @@ namespace IdentityTapsiDoc.Identity.Infra.Services
                     .Select(z => z.Value)
                     .FirstOrDefault("");
 
+            var firstName = claims.Where(z => z.Type == "display_name")
+                    .Select(z => z.Value)
+                    .FirstOrDefault("");
+
+            var lastName = claims.Where(z => z.Type == "display_last_name")
+                   .Select(z => z.Value)
+                   .FirstOrDefault("");
+
             var user = await _userManager.FindByNameAsync(phoneNumber);
+            bool isNeedUpdate = false;
             if (user == null)
             {
                 user = await _identityService.RegisterAsync(phoneNumber);
 
                 user.TapsiUserId = globalUserId;
-                await _userManager.UpdateAsync(user);
-
+                isNeedUpdate = true;
             }
+            if (string.IsNullOrEmpty(firstName))
+            {
+                user.FirstName = firstName;
+                user.LastName = lastName;
+                isNeedUpdate = true;
+            }
+            if (isNeedUpdate)
+                await _userManager.UpdateAsync(user);
 
 
             var token = await _identityService.GenerateTokenAsync(
