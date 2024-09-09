@@ -112,7 +112,7 @@ namespace IdentityTapsiDoc.Identity.Infra.Services
                 user.TapsiUserId = globalUserId;
                 isNeedUpdate = true;
             }
-            if (string.IsNullOrEmpty(firstName))
+            if (!string.IsNullOrEmpty(firstName))
             {
                 user.FirstName = firstName;
                 user.LastName = lastName;
