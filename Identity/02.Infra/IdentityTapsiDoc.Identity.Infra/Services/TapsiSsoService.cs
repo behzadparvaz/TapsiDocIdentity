@@ -95,7 +95,7 @@ namespace IdentityTapsiDoc.Identity.Infra.Services
                     .Select(z => z.Value)
                     .FirstOrDefault("");
 
-            var firstName = claims.Where(z => z.Type == "display_name")
+            var firstName = claims.Where(z => z.Type == "display_first_name")
                     .Select(z => z.Value)
                     .FirstOrDefault("");
 
