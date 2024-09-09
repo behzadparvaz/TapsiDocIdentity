@@ -31,6 +31,7 @@ namespace IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.Verif
                 throw new ArgumentException("the code not valid");
 
             var findUser = await this.userManager.FindByNameAsync(request.PhoneNumber);
+            
             if (findUser == null)
             {
                 User user = new()

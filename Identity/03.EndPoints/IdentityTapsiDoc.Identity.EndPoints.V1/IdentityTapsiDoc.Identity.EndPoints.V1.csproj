@@ -25,6 +25,7 @@
     <ProjectReference Include="..\..\01.Core\IdentityTapsiDoc.Identity.Core.Domain\IdentityTapsiDoc.Identity.Core.Domain.csproj" />
     <ProjectReference Include="..\..\02.Infra\IdentityTapsiDoc.Identity.Infra.Data.Command\IdentityTapsiDoc.Identity.Infra.Data.Command.csproj" />
     <ProjectReference Include="..\..\02.Infra\IdentityTapsiDoc.Identity.Infra.Data.Query\IdentityTapsiDoc.Identity.Infra.Data.Query.csproj" />
+    <ProjectReference Include="..\..\02.Infra\IdentityTapsiDoc.Identity.Infra\IdentityTapsiDoc.Identity.Infra.csproj" />
   </ItemGroup>
 
 </Project>
