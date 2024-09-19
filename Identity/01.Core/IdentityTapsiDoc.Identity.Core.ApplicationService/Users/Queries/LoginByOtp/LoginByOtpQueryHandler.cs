@@ -15,11 +15,13 @@ namespace IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginB
     {
         private readonly UserManager<User> _userManager;
         private readonly IUserCommandRepository command;
+        private readonly IUserQueryRepository query;
 
-        public LoginByOtpQueryHandler(UserManager<User> userManager , IUserCommandRepository command)
+        public LoginByOtpQueryHandler(UserManager<User> userManager , IUserCommandRepository command , IUserQueryRepository query)
         {
             this._userManager = userManager;
             this.command = command;
+            this.query = query;
         }
 
         public async Task<RegisterSummery> Handle(LoginByOtpQuery request, CancellationToken cancellationToken)
@@ -27,6 +29,9 @@ namespace IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginB
             var result = await _userManager.FindByNameAsync(request.PhoneNumber);
             if (result != null)
             {
+                var check = await this.query.CheckSendSMS(request.PhoneNumber);
+                if (check)
+                    throw new ArgumentException("کد ارسال شد لطفا 3 دقیقه منتظر باشید");
                 await this.command.SendOtpCode(request.PhoneNumber);
                 return new RegisterSummery
                 {

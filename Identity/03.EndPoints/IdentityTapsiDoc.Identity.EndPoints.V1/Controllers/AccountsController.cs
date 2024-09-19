@@ -53,7 +53,7 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
             catch (ArgumentException ex)
             {
 
-                return BadRequest(new { StatusCode = 500, Message = ex.Message });
+                return BadRequest(new { StatusCode = 400, Message = ex.Message });
             }
 
         }
@@ -78,7 +78,7 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
             catch (ArgumentException ex)
             {
 
-                return BadRequest(new { StatusCode = 500, Message = ex.Message });
+                return BadRequest(new { StatusCode = 400, Message = ex.Message });
             }
 
         }
@@ -94,7 +94,7 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
             catch (ArgumentException ex)
             {
 
-                return BadRequest(new { StatusCode = 500, Message = ex.Message });
+                return BadRequest(new { StatusCode = 400, Message = ex.Message });
             }
 
         }
@@ -108,7 +108,7 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { StatusCode = 500, Message = ex.Message });
+                return BadRequest(new { StatusCode = 400, Message = ex.Message });
             }
         }
 

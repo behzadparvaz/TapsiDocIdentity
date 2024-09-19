@@ -23,5 +23,14 @@ namespace IdentityTapsiDoc.Identity.Infra.Data.Query.Users
             else
                 return Task.FromResult(false);
         }
+
+        public Task<bool> CheckSendSMS(string phoneNumber)
+        {
+            var result = this.repositoryRedis.Get<string>(phoneNumber);
+            if (!string.IsNullOrEmpty(result))
+                return Task.FromResult(true);
+            else
+                return Task.FromResult(false);
+        }
     }
 }

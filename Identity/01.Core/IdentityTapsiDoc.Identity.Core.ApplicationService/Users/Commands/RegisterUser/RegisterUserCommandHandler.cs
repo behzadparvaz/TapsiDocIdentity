@@ -16,11 +16,13 @@ namespace IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.Regis
     {
         private readonly UserManager<User> _userManager;
         private readonly IUserCommandRepository command;
+        private readonly IUserQueryRepository query;
 
-        public RegisterUserCommandHandler(UserManager<User>  userManager , IUserCommandRepository command)
+        public RegisterUserCommandHandler(UserManager<User>  userManager , IUserCommandRepository command , IUserQueryRepository query)
         {
             this._userManager = userManager;
             this.command = command;
+            this.query = query;
         }
 
         public async Task<RegisterSummery> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
@@ -36,6 +38,9 @@ namespace IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.Regis
             var result = await _userManager.FindByNameAsync(request.PhoneNumber);
             if (result == null)
             {
+                var check = await this.query.CheckSendSMS(request.PhoneNumber);
+                if (check)
+                    throw new ArgumentException("کد ارسال شد لطفا 3 دقیقه منتظر باشید");
                 await this.command.SendOtpCode(request.PhoneNumber);
                 return new RegisterSummery
                 {
@@ -61,6 +66,9 @@ namespace IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.Regis
                         Message = "succeeded",
                         Token = string.Empty
                     };
+                var check = await this.query.CheckSendSMS(request.PhoneNumber);
+                if (check)
+                    throw new ArgumentException("کد ارسال شد لطفا 3 دقیقه منتظر باشید");
                 await this.command.SendOtpCode(request.PhoneNumber);
                 return new RegisterSummery
                 {

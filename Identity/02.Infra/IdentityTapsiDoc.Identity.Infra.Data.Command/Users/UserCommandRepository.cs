@@ -82,7 +82,7 @@ namespace IdentityTapsiDoc.Identity.Infra.Data.Command.Users
                 Random generator = new Random();
                 string rand = generator.Next(0, 1000000).ToString("D6");
                 if (rand.Length < 6)
-                    rand = rand.PadRight(6, '0');
+                    rand = rand.PadRight(6, '1');
 
                 Model model = new()
                 {
