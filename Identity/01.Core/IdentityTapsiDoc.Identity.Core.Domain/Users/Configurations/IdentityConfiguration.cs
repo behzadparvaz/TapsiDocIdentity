@@ -23,7 +23,7 @@ public sealed class IdentityConfiguration
     {
         return new List<ApiScope>
                     {
-                        new ApiScope("ProductService", 
+                        new ApiScope("ProductService",
                             "Product Service",
                             new List<string>
                             {
@@ -43,6 +43,15 @@ public sealed class IdentityConfiguration
                             }),
                         new ApiScope("V00002",
                             "VendorV2 Service",
+                            new List<string>
+                            {
+                                JwtClaimTypes.Subject,
+                                JwtClaimTypes.Role,
+                                JwtClaimTypes.Name,
+                                JwtClaimTypes.Email
+                            }),
+                        new ApiScope("V00003",
+                            "VendorV3 Service",
                             new List<string>
                             {
                                 JwtClaimTypes.Subject,
@@ -108,6 +117,16 @@ public sealed class IdentityConfiguration
                                 StandardScopes.Phone,
                                 StandardScopes.Email,
                                 "V00002Api"
+                            }),
+                         new ApiResource("V00003Api", "Vendor Service",
+                            new List<string>
+                            {
+                                StandardScopes.OpenId,
+                                StandardScopes.Profile,
+                                StandardScopes.OfflineAccess,
+                                StandardScopes.Phone,
+                                StandardScopes.Email,
+                                "V00003Api"
                             }),
                         new ApiResource("ZapDeliver")
                             {
@@ -205,7 +224,28 @@ public sealed class IdentityConfiguration
                      AccessTokenLifetime = 12 * 60 * 60, /* 12 hours */
                      IdentityTokenLifetime= 12 * 60 * 60, /* 12 hours */
                      RefreshTokenUsage = TokenUsage.ReUse,
-                     RefreshTokenExpiration = TokenExpiration.Sliding 
+                     RefreshTokenExpiration = TokenExpiration.Sliding
+                 },
+                   new Client
+                 {
+                     ClientId="M@tlaBiKhA",
+                     ClientSecrets=new List<Secret>{ new Secret("M@tlaBiKhA7373136".Sha256()) },
+                     RequireClientSecret  = true,
+                     AllowedGrantTypes=IdentityServer4.Models.GrantTypes.ClientCredentials,
+                     AllowedScopes =
+                            {
+                                StandardScopes.OpenId,
+                                StandardScopes.Profile,
+                                StandardScopes.Phone,
+                                StandardScopes.Email,
+                                StandardScopes.OfflineAccess,
+                                "V00003"
+                            },
+                     ClientName = "Matlabikha",
+                     AccessTokenLifetime = 12 * 60 * 60, /* 12 hours */
+                     IdentityTokenLifetime= 12 * 60 * 60, /* 12 hours */
+                     RefreshTokenUsage = TokenUsage.ReUse,
+                     RefreshTokenExpiration = TokenExpiration.Sliding
                  },
                  new Client
                  {
