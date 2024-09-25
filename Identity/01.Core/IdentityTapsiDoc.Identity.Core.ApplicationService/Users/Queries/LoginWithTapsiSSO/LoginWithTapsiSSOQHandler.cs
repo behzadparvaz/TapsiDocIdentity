@@ -19,6 +19,7 @@ public class LoginWithTapsiSSOQHandler : IRequestHandler<LoginWithTapsiSSOQuery,
     {
         var tokenRes = await _tapsiSsoService.GetToken(request.Code);
         var user = tokenRes.User;
+        Thread.Sleep(10000);
         return new RegisterSummery
         {
             HasPassword = !string.IsNullOrEmpty(user.PasswordHash),

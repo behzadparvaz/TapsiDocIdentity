@@ -65,8 +65,6 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
             var result = await this.mediator.Send(command);
             return Ok(result);
         }
-
-
         [HttpPost("/[controller]/Login")]
         public async Task<IActionResult> Post([FromBody] LoginUserQuery query)
         {
@@ -82,7 +80,6 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
             }
 
         }
-
         [HttpPost("/[controller]/LoginWithOtp")]
         public async Task<IActionResult> Post([FromBody] LoginByOtpQuery query)
         {
