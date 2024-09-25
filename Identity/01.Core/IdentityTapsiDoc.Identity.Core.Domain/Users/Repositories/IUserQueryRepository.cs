@@ -9,5 +9,6 @@ namespace IdentityTapsiDoc.Identity.Core.Domain.Users.Repositories
     public interface IUserQueryRepository
     {
         Task<bool> CheckCode(string phoneNumber, string code);
+        Task<bool> CheckSendSMS(string phoneNumber);
     }
 }
