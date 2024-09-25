@@ -59,6 +59,15 @@ public sealed class IdentityConfiguration
                                 JwtClaimTypes.Name,
                                 JwtClaimTypes.Email
                             }),
+                         new ApiScope("V00004",
+                            "VendorV4 Service",
+                            new List<string>
+                            {
+                                JwtClaimTypes.Subject,
+                                JwtClaimTypes.Role,
+                                JwtClaimTypes.Name,
+                                JwtClaimTypes.Email
+                            }),
                         new ApiScope("ZapDeliver",
                             "Delivery Service",
                             new List<string>
@@ -127,6 +136,16 @@ public sealed class IdentityConfiguration
                                 StandardScopes.Phone,
                                 StandardScopes.Email,
                                 "V00003Api"
+                            }),
+                         new ApiResource("V00004Api", "Vendor Service",
+                            new List<string>
+                            {
+                                StandardScopes.OpenId,
+                                StandardScopes.Profile,
+                                StandardScopes.OfflineAccess,
+                                StandardScopes.Phone,
+                                StandardScopes.Email,
+                                "V00004Api"
                             }),
                         new ApiResource("ZapDeliver")
                             {
@@ -242,6 +261,27 @@ public sealed class IdentityConfiguration
                                 "V00003"
                             },
                      ClientName = "Matlabikha",
+                     AccessTokenLifetime = 12 * 60 * 60, /* 12 hours */
+                     IdentityTokenLifetime= 12 * 60 * 60, /* 12 hours */
+                     RefreshTokenUsage = TokenUsage.ReUse,
+                     RefreshTokenExpiration = TokenExpiration.Sliding
+                 },
+                        new Client
+                 {
+                     ClientId="MosbatGreen",
+                     ClientSecrets=new List<Secret>{ new Secret("mosbatsabz88707989".Sha256()) },
+                     RequireClientSecret  = true,
+                     AllowedGrantTypes=IdentityServer4.Models.GrantTypes.ClientCredentials,
+                     AllowedScopes =
+                            {
+                                StandardScopes.OpenId,
+                                StandardScopes.Profile,
+                                StandardScopes.Phone,
+                                StandardScopes.Email,
+                                StandardScopes.OfflineAccess,
+                                "V00004"
+                            },
+                     ClientName = "Mosbatsabz",
                      AccessTokenLifetime = 12 * 60 * 60, /* 12 hours */
                      IdentityTokenLifetime= 12 * 60 * 60, /* 12 hours */
                      RefreshTokenUsage = TokenUsage.ReUse,
