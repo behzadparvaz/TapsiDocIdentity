@@ -80,10 +80,7 @@ namespace IdentityTapsiDoc.Identity.Infra.Data.Command.Users
             {
                 var client = new HttpClient();
                 Random generator = new Random();
-                string rand = generator.Next(111111, 999999).ToString("D6");
-
-                if (rand.Length <= 5 )
-                    rand = rand.PadRight(6, '1');
+                string rand = generator.Next(111111, 999999).ToString();
 
                 Model model = new()
                 {
@@ -107,7 +104,7 @@ namespace IdentityTapsiDoc.Identity.Infra.Data.Command.Users
             catch (Exception ex)
             {
 
-                throw new ArgumentException("خطایی رخ داده است لطفا چند لحظه بعد مجدد تلاش نمایید" , ex.Message);
+                throw new ArgumentException("خطایی رخ داده است لطفا چند لحظه بعد مجدد تلاش نمایید", ex.Message);
             }
 
         }
