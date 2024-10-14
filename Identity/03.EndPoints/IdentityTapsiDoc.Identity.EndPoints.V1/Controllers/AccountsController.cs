@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
@@ -26,6 +27,7 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
             this.mediator = mediator;
         }
 
+        [EnableRateLimiting("fixed-by-user")]
         [HttpPost("/[controller]/Register")]
         public async Task<IActionResult> Post([FromBody] RegisterUserCommand command)
         {
@@ -65,6 +67,8 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
             var result = await this.mediator.Send(command);
             return Ok(result);
         }
+
+        [EnableRateLimiting("fixed-by-user")]
         [HttpPost("/[controller]/Login")]
         public async Task<IActionResult> Post([FromBody] LoginUserQuery query)
         {
@@ -80,6 +84,8 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
             }
 
         }
+
+        [EnableRateLimiting("fixed-by-user")]
         [HttpPost("/[controller]/LoginWithOtp")]
         public async Task<IActionResult> Post([FromBody] LoginByOtpQuery query)
         {
