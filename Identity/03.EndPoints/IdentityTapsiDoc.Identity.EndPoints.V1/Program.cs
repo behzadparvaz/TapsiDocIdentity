@@ -77,10 +77,27 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-    options.AddPolicy("fixed-by-user", httpContext =>
+    options.AddPolicy("fixed-register-user", httpContext =>
     {
+        var phoneNumber = httpContext.GetPhoneNumberFromBodyAsync().GetAwaiter().GetResult();
+
         return RateLimitPartition.GetFixedWindowLimiter(
-            partitionKey: GetPhoneNumberFromBodyAsync(httpContext).GetAwaiter().GetResult(),
+            partitionKey: phoneNumber,
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 3,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0,
+                Window = TimeSpan.FromMinutes(1)
+            });
+    });
+
+    options.AddPolicy("fixed-verify-user", httpContext =>
+    {
+        var phoneNumber = httpContext.GetPhoneNumberFromBodyAsync().GetAwaiter().GetResult();
+
+        return RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: phoneNumber,
             factory: _ => new FixedWindowRateLimiterOptions
             {
                 PermitLimit = 3,
@@ -119,21 +136,3 @@ app.UseCors(x => x
        .AllowCredentials());
 
 app.Run();
-
-async Task<string> GetPhoneNumberFromBodyAsync(HttpContext httpContext)
-{
-    httpContext.Request.EnableBuffering();
-
-    using var reader = new StreamReader(httpContext.Request.Body, leaveOpen: true);
-    var body = await reader.ReadToEndAsync();
-
-    httpContext.Request.Body.Position = 0;
-
-    using var jsonDoc = JsonDocument.Parse(body);
-    if (jsonDoc.RootElement.TryGetProperty("phoneNumber", out JsonElement phoneNumberElement))
-    {
-        return phoneNumberElement.GetString();
-    }
-
-    return null;
-}
