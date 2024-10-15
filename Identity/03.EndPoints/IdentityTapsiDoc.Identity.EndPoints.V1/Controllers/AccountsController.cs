@@ -1,4 +1,5 @@
-﻿using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.RegisterUser;
+﻿using Azure.Core;
+using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.RegisterUser;
 using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.SetPassword;
 using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.Verification;
 using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginByOtp;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
@@ -26,6 +28,7 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
             this.mediator = mediator;
         }
 
+        [EnableRateLimiting("fixed-register-user")]
         [HttpPost("/[controller]/Register")]
         public async Task<IActionResult> Post([FromBody] RegisterUserCommand command)
         {
@@ -37,11 +40,11 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
             catch (ArgumentException ex)
             {
 
-                return BadRequest(new {StatusCode = 500 , Message = ex.Message });
+                return BadRequest(new { StatusCode = 500, Message = ex.Message });
             }
-
         }
 
+        [EnableRateLimiting("fixed-verify-user")]
         [HttpPost("/[controller]/VerifyCode")]
         public async Task<IActionResult> Post([FromBody] VerificationCommand command)
         {
@@ -55,16 +58,22 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
 
                 return BadRequest(new { StatusCode = 400, Message = ex.Message });
             }
-
         }
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPut("/[controller]/SetPassword")]
         public async Task<IActionResult> Post([FromBody] SetPasswordCommand command)
         {
+            var identityUserName = this.User.Identity!.Name;
+
+            if (identityUserName != command.PhoneNumber)
+                return Unauthorized();
+
             var result = await this.mediator.Send(command);
+
             return Ok(result);
         }
+
         [HttpPost("/[controller]/Login")]
         public async Task<IActionResult> Post([FromBody] LoginUserQuery query)
         {
@@ -78,8 +87,8 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
 
                 return BadRequest(new { StatusCode = 400, Message = ex.Message });
             }
-
         }
+
         [HttpPost("/[controller]/LoginWithOtp")]
         public async Task<IActionResult> Post([FromBody] LoginByOtpQuery query)
         {
@@ -90,11 +99,10 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
             }
             catch (ArgumentException ex)
             {
-
                 return BadRequest(new { StatusCode = 400, Message = ex.Message });
             }
-
         }
+
         [HttpPost("/[controller]/LoginWithTapsiSSO")]
         public async Task<IActionResult> Post(LoginWithTapsiSSOQuery query)
         {

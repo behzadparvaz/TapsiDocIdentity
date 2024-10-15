@@ -5,6 +5,7 @@ using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginByOtp
 using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginUser;
 using IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginWithTapsiSSO;
 using IdentityTapsiDoc.Identity.Core.Domain.Users.CommandSummery;
+using IdentityTapsiDoc.Identity.Core.Domain.Users.Entities;
 using IdentityTapsiDoc.Identity.Core.Domain.Users.Repositories;
 using IdentityTapsiDoc.Identity.EndPoints.V1.Extensions;
 using IdentityTapsiDoc.Identity.Infra;
@@ -13,10 +14,13 @@ using IdentityTapsiDoc.Identity.Infra.Data.Command.Users.DataContext;
 using IdentityTapsiDoc.Identity.Infra.Data.Query.Users;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using ServiceStack;
 using ServiceStack.Redis;
 using System.Net.NetworkInformation;
+using System.Text.Json;
+using System.Threading.RateLimiting;
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -70,6 +74,39 @@ builder.Services.AddMediatR(cfg =>
     .AddTransient<IRequestHandler<LoginByOtpQuery, RegisterSummery>, LoginByOtpQueryHandler>()
     .AddTransient<IRequestHandler<LoginWithTapsiSSOQuery, RegisterSummery>, LoginWithTapsiSSOQHandler>();
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddPolicy("fixed-register-user", httpContext =>
+    {
+        var phoneNumber = httpContext.GetPhoneNumberFromBodyAsync().GetAwaiter().GetResult();
+
+        return RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: phoneNumber,
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 3,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0,
+                Window = TimeSpan.FromMinutes(1)
+            });
+    });
+
+    options.AddPolicy("fixed-verify-user", httpContext =>
+    {
+        var phoneNumber = httpContext.GetPhoneNumberFromBodyAsync().GetAwaiter().GetResult();
+
+        return RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: phoneNumber,
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 3,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0,
+                Window = TimeSpan.FromMinutes(1)
+            });
+    });
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -77,6 +114,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseRateLimiter();
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
