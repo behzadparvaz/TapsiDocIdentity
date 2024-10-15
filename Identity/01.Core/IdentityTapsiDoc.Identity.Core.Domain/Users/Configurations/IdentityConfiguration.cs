@@ -289,6 +289,111 @@ public sealed class IdentityConfiguration
                  },
                  new Client
                  {
+                     ClientId="66769360",
+                     ClientSecrets=new List<Secret>{ new Secret("Qwe123@@".Sha256()) },
+                     RequireClientSecret  = true,
+                     AllowedGrantTypes=IdentityServer4.Models.GrantTypes.ClientCredentials,
+                     AllowedScopes =
+                            {
+                                StandardScopes.OpenId,
+                                StandardScopes.Profile,
+                                StandardScopes.Phone,
+                                StandardScopes.Email,
+                                StandardScopes.OfflineAccess,
+                                "V00005"
+                            },
+                     ClientName = "66769360",
+                     AccessTokenLifetime = 12 * 60 * 60, /* 12 hours */
+                     IdentityTokenLifetime= 12 * 60 * 60, /* 12 hours */
+                     RefreshTokenUsage = TokenUsage.ReUse,
+                     RefreshTokenExpiration = TokenExpiration.Sliding
+                 },
+                 new Client
+                 {
+                     ClientId="22432754",
+                     ClientSecrets=new List<Secret>{ new Secret("Qwe123@@".Sha256()) },
+                     RequireClientSecret  = true,
+                     AllowedGrantTypes=IdentityServer4.Models.GrantTypes.ClientCredentials,
+                     AllowedScopes =
+                            {
+                                StandardScopes.OpenId,
+                                StandardScopes.Profile,
+                                StandardScopes.Phone,
+                                StandardScopes.Email,
+                                StandardScopes.OfflineAccess,
+                                "V00006"
+                            },
+                     ClientName = "22432754",
+                     AccessTokenLifetime = 12 * 60 * 60, /* 12 hours */
+                     IdentityTokenLifetime= 12 * 60 * 60, /* 12 hours */
+                     RefreshTokenUsage = TokenUsage.ReUse,
+                     RefreshTokenExpiration = TokenExpiration.Sliding
+                 },
+                 new Client
+                 {
+                     ClientId="177928343",
+                     ClientSecrets=new List<Secret>{ new Secret("Qwe123@@".Sha256()) },
+                     RequireClientSecret  = true,
+                     AllowedGrantTypes=IdentityServer4.Models.GrantTypes.ClientCredentials,
+                     AllowedScopes =
+                            {
+                                StandardScopes.OpenId,
+                                StandardScopes.Profile,
+                                StandardScopes.Phone,
+                                StandardScopes.Email,
+                                StandardScopes.OfflineAccess,
+                                "V00007"
+                            },
+                     ClientName = "177928343",
+                     AccessTokenLifetime = 12 * 60 * 60, /* 12 hours */
+                     IdentityTokenLifetime= 12 * 60 * 60, /* 12 hours */
+                     RefreshTokenUsage = TokenUsage.ReUse,
+                     RefreshTokenExpiration = TokenExpiration.Sliding
+                 },
+                 new Client
+                 {
+                     ClientId="22173332",
+                     ClientSecrets=new List<Secret>{ new Secret("Qwe123@@".Sha256()) },
+                     RequireClientSecret  = true,
+                     AllowedGrantTypes=IdentityServer4.Models.GrantTypes.ClientCredentials,
+                     AllowedScopes =
+                            {
+                                StandardScopes.OpenId,
+                                StandardScopes.Profile,
+                                StandardScopes.Phone,
+                                StandardScopes.Email,
+                                StandardScopes.OfflineAccess,
+                                "V00008"
+                            },
+                     ClientName = "22173332",
+                     AccessTokenLifetime = 12 * 60 * 60, /* 12 hours */
+                     IdentityTokenLifetime= 12 * 60 * 60, /* 12 hours */
+                     RefreshTokenUsage = TokenUsage.ReUse,
+                     RefreshTokenExpiration = TokenExpiration.Sliding
+                 },
+                 new Client
+                 {
+                     ClientId="44614053",
+                     ClientSecrets=new List<Secret>{ new Secret("Qwe123@@".Sha256()) },
+                     RequireClientSecret  = true,
+                     AllowedGrantTypes=IdentityServer4.Models.GrantTypes.ClientCredentials,
+                     AllowedScopes =
+                            {
+                                StandardScopes.OpenId,
+                                StandardScopes.Profile,
+                                StandardScopes.Phone,
+                                StandardScopes.Email,
+                                StandardScopes.OfflineAccess,
+                                "V00009"
+                            },
+                     ClientName = "44614053",
+                     AccessTokenLifetime = 12 * 60 * 60, /* 12 hours */
+                     IdentityTokenLifetime= 12 * 60 * 60, /* 12 hours */
+                     RefreshTokenUsage = TokenUsage.ReUse,
+                     RefreshTokenExpiration = TokenExpiration.Sliding
+                 },
+                 new Client
+                 {
                      ClientId="Zap",
                      ClientSecrets=new List<Secret>{ new Secret("Z@pExpre$$".Sha256()) },
                      RequireClientSecret  = true,
