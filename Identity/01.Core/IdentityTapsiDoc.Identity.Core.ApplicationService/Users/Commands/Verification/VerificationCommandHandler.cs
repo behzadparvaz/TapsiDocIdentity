@@ -27,11 +27,11 @@ namespace IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.Verif
         public async Task<RegisterSummery> Handle(VerificationCommand request, CancellationToken cancellationToken)
         {
             var result = await this.query.CheckCode(request.PhoneNumber, request.Code);
-            if (!result)
+            if (result == false)
                 throw new ArgumentException("the code not valid");
 
             var findUser = await this.userManager.FindByNameAsync(request.PhoneNumber);
-            
+
             if (findUser == null)
             {
                 User user = new()

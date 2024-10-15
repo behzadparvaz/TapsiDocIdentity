@@ -8,7 +8,7 @@ namespace IdentityTapsiDoc.Identity.Core.Domain.Users.Repositories
 {
     public interface IUserQueryRepositoryRedis
     {
-        T Get<T>(string key);
+        T? Get<T>(string key);
         Task<string> GetToken(string key);
         Task<List<string>> GetAll();
         string GetString(string key);

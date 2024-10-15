@@ -16,19 +16,19 @@ namespace IdentityTapsiDoc.Identity.Infra.Data.Query.Users
             if (_keys == null)
                 _keys = new HashSet<string>();
         }
-        public T Get<T>(string key)
+        public T? Get<T>(string key)
         {
             try
             {
                 var result = redisClient.Get<string>(key);
-                if (result == null)
-                    return default(T);
-                return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(result);
+                if (!string.IsNullOrEmpty(result))
+                {
+                    return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(result);
+                }
             }
-            catch
-            {
-                return default(T);
-            }
+            catch { }
+            return default;
+
         }
 
         public Task<List<string>> GetAll()

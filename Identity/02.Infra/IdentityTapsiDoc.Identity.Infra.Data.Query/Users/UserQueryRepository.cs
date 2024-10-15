@@ -15,13 +15,13 @@ namespace IdentityTapsiDoc.Identity.Infra.Data.Query.Users
         {
             this.repositoryRedis = repositoryRedis;
         }
-        public Task<bool> CheckCode(string phoneNumber, string code)
+        public async Task<bool> CheckCode(string phoneNumber, string code)
         {
             var result = this.repositoryRedis.Get<string>(phoneNumber);
-            if (result.Equals(code))
-                return Task.FromResult(true);
-            else
-                return Task.FromResult(false);
+            if (result == code)
+                return true;
+
+            return false;
         }
 
         public Task<bool> CheckSendSMS(string phoneNumber)
