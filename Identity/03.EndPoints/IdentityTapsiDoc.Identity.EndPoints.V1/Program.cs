@@ -28,7 +28,36 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DataBaseContext>(
     p => p.UseSqlServer(builder.Configuration.GetSection("Connection:ConnectionString").Value));
 
+builder.Services.Configure<IdentityOptions>(option =>
+{
+    option.Password = new PasswordOptions()
+    {
+        RequireDigit = true,
+        RequireLowercase = true,
+        RequireNonAlphanumeric = false,
+        RequireUppercase = true,
+        RequiredLength = 8,
+        RequiredUniqueChars = 1
+    };    
+
+    //Lokout Setting
+    option.Lockout.MaxFailedAccessAttempts = 3;
+    option.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMilliseconds(3);
+
+    //SignIn Setting
+    option.SignIn.RequireConfirmedAccount = false;
+    option.SignIn.RequireConfirmedEmail = false;
+    option.SignIn.RequireConfirmedPhoneNumber = false;
+
+});
+
+builder.Services
+    .AddAspNetIdentity()
+    .AddOIDCIdentity(builder.Configuration)
+    .AddTheIdentityServer();
+
 builder.Services.AddInfrastructureServices(builder.Configuration);
+
 builder.Services.AddSingleton(typeof(IRedisClientsManager),
     new RedisManagerPool(builder.Configuration.GetSection("Redis:RedisConnectionString").Value));
 
@@ -85,27 +114,38 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var allowedOrigins= builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+var policyName = builder.Configuration.GetSection("Cors:Name").Value;
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(policyName!, policy =>
+    {
+        policy.WithOrigins(allowedOrigins!)
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 
 app.UseRateLimiter();
 
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
 app.UseSwagger();
 app.UseSwaggerUI();
-//}
+
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Append("X-Frame-Options", "DENY");
+    await next();
+});
 
 //app.UseHttpsRedirection();
 app.UseIdentityServer();
 app.UseAuthorization();
 app.UseAuthentication();
 app.MapControllers();
-app.UseCors(x => x
-       .AllowAnyMethod()
-       .AllowAnyHeader()
-       .SetIsOriginAllowed(origin => true)
-       .AllowCredentials());
+app.UseCors(policyName!);
 
 //(new DatabaseInit()).InitializeDatabase(app);
 app.Run();

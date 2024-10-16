@@ -35,9 +35,9 @@ namespace IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginB
                 await this.command.SendOtpCode(request.PhoneNumber);
                 return new RegisterSummery
                 {
-                    HasPassword = false,
-                    IsActive = true,
-                    IsRegister = true,
+                    //HasPassword = false,
+                    //IsActive = true,
+                    //IsRegister = true,
                     PhoneNumber = request.PhoneNumber,
                     StatusCode = 200,
                     Message = "succeeded",
