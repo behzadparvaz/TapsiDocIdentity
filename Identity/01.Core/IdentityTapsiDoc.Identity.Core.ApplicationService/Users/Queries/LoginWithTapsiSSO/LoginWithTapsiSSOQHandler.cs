@@ -22,9 +22,9 @@ public class LoginWithTapsiSSOQHandler : IRequestHandler<LoginWithTapsiSSOQuery,
         //Thread.Sleep(10000);
         return new RegisterSummery
         {
-            HasPassword = !string.IsNullOrEmpty(user.PasswordHash),
-            IsActive = true,
-            IsRegister = true,
+            //HasPassword = !string.IsNullOrEmpty(user.PasswordHash),
+            //IsActive = true,
+            //IsRegister = true,
             PhoneNumber = user.PhoneNumber,
             StatusCode = 200,
             Message = "succeeded",

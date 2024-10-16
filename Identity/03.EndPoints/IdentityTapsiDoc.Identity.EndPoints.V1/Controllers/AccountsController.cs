@@ -55,7 +55,6 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
             }
             catch (ArgumentException ex)
             {
-
                 return BadRequest(new { StatusCode = 400, Message = ex.Message });
             }
         }
@@ -68,10 +67,16 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
 
             if (identityUserName != command.PhoneNumber)
                 return Unauthorized();
-
-            var result = await this.mediator.Send(command);
-
-            return Ok(result);
+            try
+            {
+                var result = await this.mediator.Send(command);
+                
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { StatusCode = 400, Message = ex.Message });
+            }            
         }
 
         [HttpPost("/[controller]/Login")]
@@ -116,6 +121,5 @@ namespace IdentityTapsiDoc.Identity.EndPoints.V1.Controllers
                 return BadRequest(new { StatusCode = 400, Message = ex.Message });
             }
         }
-
     }
 }

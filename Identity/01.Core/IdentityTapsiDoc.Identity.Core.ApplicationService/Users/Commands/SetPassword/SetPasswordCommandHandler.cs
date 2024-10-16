@@ -23,14 +23,41 @@ namespace IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.SetPa
             if (request.Password.Equals(request.ConfrimPassword))
             {
                 var result = await this._userManager.FindByNameAsync(request.PhoneNumber);
-                if(result == null)
-                    throw new ArgumentException("");
+                if (result == null)
+                    throw new ArgumentException("");                
+
                 if (result.PasswordHash == null)
-                   await _userManager.AddPasswordAsync(result, request.Password);
+                {
+                    var identityResult = await ValidatePasswordAsync(_userManager, result, request.ConfrimPassword);
+                    if (identityResult.Succeeded)
+                        await _userManager.AddPasswordAsync(result, request.Password);
+                    else
+                    {
+                        throw new Exception("الزامات امنیتی رمز عبور رعایت نشده است");
+                    }
+                }
+                    
                 return true;
             }
             else
-                throw new ArgumentException("password and confrim pawwsord not mached");
+                throw new ArgumentException("password and confirm password not matched");
+        }
+
+        private async Task<IdentityResult> ValidatePasswordAsync(UserManager<User> userManager, User user, string newPassword)
+        {           
+            var passwordValidationResults = new List<IdentityResult>();
+            foreach (var validator in userManager.PasswordValidators)
+            {
+                var result = await validator.ValidateAsync(userManager, user, newPassword);
+                passwordValidationResults.Add(result);
+               
+                if (!result.Succeeded)
+                {
+                    return result;
+                }
+            }
+
+            return IdentityResult.Success;
         }
     }
 }

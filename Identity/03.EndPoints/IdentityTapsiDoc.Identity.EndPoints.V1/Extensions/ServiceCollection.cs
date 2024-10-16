@@ -20,7 +20,7 @@ internal static class ApplicationDependencyRegistrator
             {
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;               
             })
             .AddJwtBearer(options =>
             {
@@ -43,12 +43,7 @@ internal static class ApplicationDependencyRegistrator
 
     internal static IServiceCollection AddAspNetIdentity(this IServiceCollection services)
     {
-        services.AddIdentity<User, Role>(options =>
-        {
-            options.Stores.MaxLengthForKeys = 36;
-            options.SignIn.RequireConfirmedEmail = false;
-            options.SignIn.RequireConfirmedPhoneNumber = false;
-        })
+        services.AddIdentity<User, Role>()
         .AddEntityFrameworkStores<DataBaseContext>()
         .AddDefaultTokenProviders();
 
@@ -70,6 +65,8 @@ internal static class ApplicationDependencyRegistrator
             options.Events.RaiseSuccessEvents = true;
             options.Events.RaiseInformationEvents = true;
             options.IssuerUri = "http://localhost:35200";
+
+            
         })
         .AddInMemoryApiScopes(IdentityConfiguration.GetApiScopes())
         .AddDeveloperSigningCredential()

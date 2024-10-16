@@ -43,9 +43,9 @@ namespace IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Queries.LoginU
 
                 return new RegisterSummery
                 {
-                    HasPassword = false,
-                    IsActive = true,
-                    IsRegister = true,
+                    //HasPassword = false,
+                    //IsActive = true,
+                    //IsRegister = true,
                     PhoneNumber = request.PhoneNumber,
                     StatusCode = 200,
                     Message = "succeeded",

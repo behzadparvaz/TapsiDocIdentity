@@ -44,9 +44,9 @@ namespace IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.Regis
                 await this.command.SendOtpCode(request.PhoneNumber);
                 return new RegisterSummery
                 {
-                    HasPassword = false,
-                    IsActive = true,
-                    IsRegister = false,
+                    //HasPassword = false,
+                    //IsActive = true,
+                    //IsRegister = false,
                     PhoneNumber = request.PhoneNumber,
                     StatusCode = 200,
                     Message = "succeeded",
@@ -58,9 +58,9 @@ namespace IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.Regis
                 if(result.PasswordHash != null)
                     return new RegisterSummery
                     {
-                        HasPassword = true,
-                        IsActive = true,
-                        IsRegister = true,
+                        //HasPassword = true,
+                        //IsActive = true,
+                        //IsRegister = true,
                         PhoneNumber = request.PhoneNumber,
                         StatusCode = 200,
                         Message = "succeeded",
@@ -72,9 +72,9 @@ namespace IdentityTapsiDoc.Identity.Core.ApplicationService.Users.Commands.Regis
                 await this.command.SendOtpCode(request.PhoneNumber);
                 return new RegisterSummery
                 {
-                    HasPassword = false,
-                    IsActive = true,
-                    IsRegister = true,
+                    //HasPassword = false,
+                    //IsActive = true,
+                    //IsRegister = true,
                     PhoneNumber = request.PhoneNumber,
                     StatusCode = 200,
                     Message = "succeeded",

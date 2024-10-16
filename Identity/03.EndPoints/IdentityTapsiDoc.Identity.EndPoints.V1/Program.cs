@@ -27,23 +27,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DataBaseContext>(
     p => p.UseSqlServer(builder.Configuration.GetSection("Connection:ConnectionString").Value));
 
-builder.Services
-    .AddAspNetIdentity()
-    .AddOIDCIdentity(builder.Configuration)
-    .AddTheIdentityServer();
-
-builder.Services.AddInfrastructureServices(builder.Configuration);
-
 builder.Services.Configure<IdentityOptions>(option =>
 {
-
-    //Password Setting
-    option.Password.RequireDigit = false;
-    option.Password.RequireLowercase = false;
-    option.Password.RequireNonAlphanumeric = false;
-    option.Password.RequireUppercase = false;
-    option.Password.RequiredLength = 3;
-    option.Password.RequiredUniqueChars = 1;
+    option.Password = new PasswordOptions()
+    {
+        RequireDigit = true,
+        RequireLowercase = true,
+        RequireNonAlphanumeric = false,
+        RequireUppercase = true,
+        RequiredLength = 8,
+        RequiredUniqueChars = 1
+    };    
 
     //Lokout Setting
     option.Lockout.MaxFailedAccessAttempts = 3;
@@ -56,6 +50,12 @@ builder.Services.Configure<IdentityOptions>(option =>
 
 });
 
+builder.Services
+    .AddAspNetIdentity()
+    .AddOIDCIdentity(builder.Configuration)
+    .AddTheIdentityServer();
+
+builder.Services.AddInfrastructureServices(builder.Configuration);
 
 builder.Services.AddSingleton(typeof(IRedisClientsManager),
     new RedisManagerPool(builder.Configuration.GetSection("Redis:RedisConnectionString").Value));
@@ -113,26 +113,37 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var allowedOrigins= builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+var policyName = builder.Configuration.GetSection("Cors:Name").Value;
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(policyName!, policy =>
+    {
+        policy.WithOrigins(allowedOrigins!)
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 
 app.UseRateLimiter();
 
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
 app.UseSwagger();
 app.UseSwaggerUI();
-//}
+
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Append("X-Frame-Options", "DENY");
+    await next();
+});
 
 //app.UseHttpsRedirection();
 app.UseIdentityServer();
 app.UseAuthorization();
 app.UseAuthentication();
 app.MapControllers();
-app.UseCors(x => x
-       .AllowAnyMethod()
-       .AllowAnyHeader()
-       .SetIsOriginAllowed(origin => true)
-       .AllowCredentials());
+app.UseCors(policyName!);
 
 app.Run();
