@@ -121,9 +121,18 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(policyName!, policy =>
     {
-        policy.WithOrigins(allowedOrigins!)
-              .AllowAnyMethod()
-              .AllowAnyHeader();
+        if (builder.Environment.IsDevelopment())
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        }
+        else
+        {
+            policy.WithOrigins(allowedOrigins!)
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        }
     });
 });
 
