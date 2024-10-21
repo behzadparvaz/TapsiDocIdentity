@@ -68,6 +68,69 @@ public sealed class IdentityConfiguration
                                 JwtClaimTypes.Name,
                                 JwtClaimTypes.Email
                             }),
+                          new ApiScope("V00005",
+                            "VendorV5 Service",
+                            new List<string>
+                            {
+                                JwtClaimTypes.Subject,
+                                JwtClaimTypes.Role,
+                                JwtClaimTypes.Name,
+                                JwtClaimTypes.Email
+                            }),
+                           new ApiScope("V00006",
+                            "VendorV6 Service",
+                            new List<string>
+                            {
+                                JwtClaimTypes.Subject,
+                                JwtClaimTypes.Role,
+                                JwtClaimTypes.Name,
+                                JwtClaimTypes.Email
+                            }),
+                            new ApiScope("V00007",
+                            "VendorV7 Service",
+                            new List<string>
+                            {
+                                JwtClaimTypes.Subject,
+                                JwtClaimTypes.Role,
+                                JwtClaimTypes.Name,
+                                JwtClaimTypes.Email
+                            }),
+                             new ApiScope("V00008",
+                            "VendorV8 Service",
+                            new List<string>
+                            {
+                                JwtClaimTypes.Subject,
+                                JwtClaimTypes.Role,
+                                JwtClaimTypes.Name,
+                                JwtClaimTypes.Email
+                            }),
+                              new ApiScope("V00009",
+                            "VendorV9 Service",
+                            new List<string>
+                            {
+                                JwtClaimTypes.Subject,
+                                JwtClaimTypes.Role,
+                                JwtClaimTypes.Name,
+                                JwtClaimTypes.Email
+                            }),
+                                new ApiScope("V00010",
+                            "VendorV10 Service",
+                            new List<string>
+                            {
+                                JwtClaimTypes.Subject,
+                                JwtClaimTypes.Role,
+                                JwtClaimTypes.Name,
+                                JwtClaimTypes.Email
+                            }),
+                                 new ApiScope("SCOPE-MCS-TAPSI-DR",
+                            "MCS TAPSI DR PANEL",
+                            new List<string>
+                            {
+                                JwtClaimTypes.Subject,
+                                JwtClaimTypes.Role,
+                                JwtClaimTypes.Name,
+                                JwtClaimTypes.Email
+                            }),
                         new ApiScope("ZapDeliver",
                             "Delivery Service",
                             new List<string>
@@ -146,6 +209,76 @@ public sealed class IdentityConfiguration
                                 StandardScopes.Phone,
                                 StandardScopes.Email,
                                 "V00004Api"
+                            }),
+                         new ApiResource("V00005Api", "Vendor Service",
+                            new List<string>
+                            {
+                                StandardScopes.OpenId,
+                                StandardScopes.Profile,
+                                StandardScopes.OfflineAccess,
+                                StandardScopes.Phone,
+                                StandardScopes.Email,
+                                "V00005Api"
+                            }),
+                         new ApiResource("V00006Api", "Vendor Service",
+                            new List<string>
+                            {
+                                StandardScopes.OpenId,
+                                StandardScopes.Profile,
+                                StandardScopes.OfflineAccess,
+                                StandardScopes.Phone,
+                                StandardScopes.Email,
+                                "V00006Api"
+                            }),
+                         new ApiResource("V00007Api", "Vendor Service",
+                            new List<string>
+                            {
+                                StandardScopes.OpenId,
+                                StandardScopes.Profile,
+                                StandardScopes.OfflineAccess,
+                                StandardScopes.Phone,
+                                StandardScopes.Email,
+                                "V00007Api"
+                            }),
+                         new ApiResource("V00008Api", "Vendor Service",
+                            new List<string>
+                            {
+                                StandardScopes.OpenId,
+                                StandardScopes.Profile,
+                                StandardScopes.OfflineAccess,
+                                StandardScopes.Phone,
+                                StandardScopes.Email,
+                                "V00008Api"
+                            }),
+                         new ApiResource("V00009Api", "Vendor Service",
+                            new List<string>
+                            {
+                                StandardScopes.OpenId,
+                                StandardScopes.Profile,
+                                StandardScopes.OfflineAccess,
+                                StandardScopes.Phone,
+                                StandardScopes.Email,
+                                "V00009Api"
+                            }),
+                         new ApiResource("V00010Api", "Vendor Service",
+                            new List<string>
+                            {
+                                StandardScopes.OpenId,
+                                StandardScopes.Profile,
+                                StandardScopes.OfflineAccess,
+                                StandardScopes.Phone,
+                                StandardScopes.Email,
+                                "V00010Api"
+                            }),
+                           new ApiResource("RESOURCE-MCS-TAPSI-DR", "MCS TAPSI DR",
+                            new List<string>
+                            {
+                                StandardScopes.OpenId,
+                                StandardScopes.Profile,
+                                StandardScopes.OfflineAccess,
+                                StandardScopes.Phone,
+                                StandardScopes.Email,
+                                "SCOPE-MCS-TAPSI-DR"
                             }),
                         new ApiResource("ZapDeliver")
                             {
@@ -387,6 +520,48 @@ public sealed class IdentityConfiguration
                                 "V00009"
                             },
                      ClientName = "44614053",
+                     AccessTokenLifetime = 12 * 60 * 60, /* 12 hours */
+                     IdentityTokenLifetime= 12 * 60 * 60, /* 12 hours */
+                     RefreshTokenUsage = TokenUsage.ReUse,
+                     RefreshTokenExpiration = TokenExpiration.Sliding
+                 },
+                  new Client
+                 {
+                     ClientId="66575390",
+                     ClientSecrets=new List<Secret>{ new Secret("Qwe123@@".Sha256()) },
+                     RequireClientSecret  = true,
+                     AllowedGrantTypes=IdentityServer4.Models.GrantTypes.ClientCredentials,
+                     AllowedScopes =
+                            {
+                                StandardScopes.OpenId,
+                                StandardScopes.Profile,
+                                StandardScopes.Phone,
+                                StandardScopes.Email,
+                                StandardScopes.OfflineAccess,
+                                "V00010"
+                            },
+                     ClientName = "66575390",
+                     AccessTokenLifetime = 12 * 60 * 60, /* 12 hours */
+                     IdentityTokenLifetime= 12 * 60 * 60, /* 12 hours */
+                     RefreshTokenUsage = TokenUsage.ReUse,
+                     RefreshTokenExpiration = TokenExpiration.Sliding
+                 },
+                  new Client
+                 {
+                     ClientId="msc-tapsidr",
+                     ClientSecrets=new List<Secret>{ new Secret("Qwe123@@".Sha256()) },
+                     RequireClientSecret  = true,
+                     AllowedGrantTypes=IdentityServer4.Models.GrantTypes.ClientCredentials,
+                     AllowedScopes =
+                            {
+                                StandardScopes.OpenId,
+                                StandardScopes.Profile,
+                                StandardScopes.Phone,
+                                StandardScopes.Email,
+                                StandardScopes.OfflineAccess,
+                                "SCOPE-MCS-TAPSI-DR"
+                            },
+                     ClientName = "msc-tapsidr",
                      AccessTokenLifetime = 12 * 60 * 60, /* 12 hours */
                      IdentityTokenLifetime= 12 * 60 * 60, /* 12 hours */
                      RefreshTokenUsage = TokenUsage.ReUse,
