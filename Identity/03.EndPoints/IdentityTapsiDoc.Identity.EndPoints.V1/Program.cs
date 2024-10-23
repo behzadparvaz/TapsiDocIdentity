@@ -11,6 +11,7 @@ using IdentityTapsiDoc.Identity.EndPoints.V1.Extensions;
 using IdentityTapsiDoc.Identity.Infra;
 using IdentityTapsiDoc.Identity.Infra.Data.Command.Users;
 using IdentityTapsiDoc.Identity.Infra.Data.Command.Users.DataContext;
+using IdentityTapsiDoc.Identity.Infra.Data.Persistence.SeedData;
 using IdentityTapsiDoc.Identity.Infra.Data.Query.Users;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -27,36 +28,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DataBaseContext>(
     p => p.UseSqlServer(builder.Configuration.GetSection("Connection:ConnectionString").Value));
 
-builder.Services
-    .AddAspNetIdentity()
-    .AddOIDCIdentity(builder.Configuration)
-    .AddTheIdentityServer();
-
 builder.Services.AddInfrastructureServices(builder.Configuration);
-
-builder.Services.Configure<IdentityOptions>(option =>
-{
-
-    //Password Setting
-    option.Password.RequireDigit = false;
-    option.Password.RequireLowercase = false;
-    option.Password.RequireNonAlphanumeric = false;
-    option.Password.RequireUppercase = false;
-    option.Password.RequiredLength = 3;
-    option.Password.RequiredUniqueChars = 1;
-
-    //Lokout Setting
-    option.Lockout.MaxFailedAccessAttempts = 3;
-    option.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMilliseconds(3);
-
-    //SignIn Setting
-    option.SignIn.RequireConfirmedAccount = false;
-    option.SignIn.RequireConfirmedEmail = false;
-    option.SignIn.RequireConfirmedPhoneNumber = false;
-
-});
-
-
 builder.Services.AddSingleton(typeof(IRedisClientsManager),
     new RedisManagerPool(builder.Configuration.GetSection("Redis:RedisConnectionString").Value));
 
@@ -135,4 +107,7 @@ app.UseCors(x => x
        .SetIsOriginAllowed(origin => true)
        .AllowCredentials());
 
+//(new DatabaseInit()).InitializeDatabase(app);
 app.Run();
+
+

@@ -7,6 +7,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="12.0.0" />
+		<PackageReference Include="Cnblogs.IdentityServer4.EntityFramework.Storage" Version="4.2.1" />
+		<PackageReference Include="IdentityServer4.EntityFramework" Version="4.1.2" />
+		<PackageReference Include="IdentityServer4.EntityFramework.Storage" Version="4.1.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
@@ -14,6 +21,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\01.Core\IdentityTapsiDoc.Identity.Core.Domain\IdentityTapsiDoc.Identity.Core.Domain.csproj" />
+		<ProjectReference Include="..\IdentityTapsiDoc.Identity.Infra.Data.Command\IdentityTapsiDoc.Identity.Infra.Data.Command.csproj" />
 	</ItemGroup>
 
 </Project>
