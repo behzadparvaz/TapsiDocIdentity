@@ -34,7 +34,7 @@ internal static class ApplicationDependencyRegistrator
                     ValidateIssuerSigningKey = true,
                     ClockSkew = TimeSpan.Zero,
                     IssuerSigningKeys = ApplicationTokens.Tokens.Values,
-                    ValidIssuer = "http://localhost:35200",
+                    ValidIssuer = configuration["ValidIssuer"],
                     ValidAudiences = ApplicationTokens.Tokens.Keys
                 };
             });
@@ -51,7 +51,7 @@ internal static class ApplicationDependencyRegistrator
     }
 
     internal static IServiceCollection AddTheIdentityServer(
-    this IServiceCollection services)
+    this IServiceCollection services, IConfiguration configuration)
     {
         IIdentityServerBuilder identityBuilder = services.AddIdentityServer(options =>
         {
@@ -64,7 +64,7 @@ internal static class ApplicationDependencyRegistrator
             options.Events.RaiseFailureEvents = true;
             options.Events.RaiseSuccessEvents = true;
             options.Events.RaiseInformationEvents = true;
-            options.IssuerUri = "http://localhost:35200";
+            options.IssuerUri = configuration["ValidIssuer"];
 
             
         })

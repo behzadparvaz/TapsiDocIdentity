@@ -54,7 +54,7 @@ builder.Services.Configure<IdentityOptions>(option =>
 builder.Services
     .AddAspNetIdentity()
     .AddOIDCIdentity(builder.Configuration)
-    .AddTheIdentityServer();
+    .AddTheIdentityServer(builder.Configuration);
 
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
