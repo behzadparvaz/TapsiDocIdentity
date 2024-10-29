@@ -28,34 +28,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DataBaseContext>(
     p => p.UseSqlServer(builder.Configuration.GetSection("Connection:ConnectionString").Value));
 
-builder.Services.Configure<IdentityOptions>(option =>
-{
-    option.Password = new PasswordOptions()
-    {
-        RequireDigit = true,
-        RequireLowercase = true,
-        RequireNonAlphanumeric = false,
-        RequireUppercase = true,
-        RequiredLength = 8,
-        RequiredUniqueChars = 1
-    };    
-
-    //Lokout Setting
-    option.Lockout.MaxFailedAccessAttempts = 3;
-    option.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMilliseconds(3);
-
-    //SignIn Setting
-    option.SignIn.RequireConfirmedAccount = false;
-    option.SignIn.RequireConfirmedEmail = false;
-    option.SignIn.RequireConfirmedPhoneNumber = false;
-
-});
-
-builder.Services
-    .AddAspNetIdentity()
-    .AddOIDCIdentity(builder.Configuration)
-    .AddTheIdentityServer(builder.Configuration);
-
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
 builder.Services.AddSingleton(typeof(IRedisClientsManager),
