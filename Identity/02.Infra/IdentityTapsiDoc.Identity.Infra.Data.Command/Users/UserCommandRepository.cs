@@ -12,6 +12,8 @@ using Polly.Timeout;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Text;
+using IPE.SmsIrClient;
+using IPE.SmsIrClient.Models.Requests;
 
 namespace IdentityTapsiDoc.Identity.Infra.Data.Command.Users
 {
@@ -82,24 +84,35 @@ namespace IdentityTapsiDoc.Identity.Infra.Data.Command.Users
                 Random generator = new Random();
                 string rand = generator.Next(111111, 999999).ToString();
 
-                Model model = new()
-                {
-                    PhoneNumber = phoneNumber,
-                    OtpCode = rand
-                };
-                var json = JsonConvert.SerializeObject(model, new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var result = await _fallbackPolicy.ExecuteAsync(() => _retryPolicy.ExecuteAsync(() =>
-                                                                      _circuitBreaker.ExecuteAsync(() =>
-                                                                       client.PostAsync($"{this.configuration.GetSection("SMS").GetSection(_baseSendSms).Value}", content)
-                                                                          )));
-                if (result.StatusCode == System.Net.HttpStatusCode.Created)
-                {
-                    this.redisManager.Create(phoneNumber, rand.ToString(), TimeSpan.FromMinutes(3));
-                    return true;
-                }
-                else
-                    throw new ArgumentException("Send SMS", "SMS Code Error, Please Try Agin");
+                var smsIr = new SmsIr("2bGa4vp4wVxMVcEoulZjTrQ3bygp8gaeUAU0uGQ0WyGQUCK3nerVfZ9o0FrLa6A4");
+
+                var templateId = 322805;
+                VerifySendParameter[] verifySendParameters =
+                [
+                    new VerifySendParameter("NAME", "Otp"),
+                    new VerifySendParameter("CODE", rand),
+                ];
+
+                _= smsIr.VerifySendAsync(phoneNumber, templateId, verifySendParameters);
+                return true;
+                // Model model = new()
+                // {
+                //     PhoneNumber = phoneNumber,
+                //     OtpCode = rand
+                // };
+                // var json = JsonConvert.SerializeObject(model, new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+                // var content = new StringContent(json, Encoding.UTF8, "application/json");
+                // var result = await _fallbackPolicy.ExecuteAsync(() => _retryPolicy.ExecuteAsync(() =>
+                //                                                       _circuitBreaker.ExecuteAsync(() =>
+                //                                                        client.PostAsync($"{this.configuration.GetSection("SMS").GetSection(_baseSendSms).Value}", content)
+                //                                                           )));
+                // if (result.StatusCode == System.Net.HttpStatusCode.Created)
+                // {
+                //     this.redisManager.Create(phoneNumber, rand.ToString(), TimeSpan.FromMinutes(3));
+                //     return true;
+                // }
+                // else
+                //     throw new ArgumentException("Send SMS", "SMS Code Error, Please Try Agin");
             }
             catch (Exception ex)
             {
