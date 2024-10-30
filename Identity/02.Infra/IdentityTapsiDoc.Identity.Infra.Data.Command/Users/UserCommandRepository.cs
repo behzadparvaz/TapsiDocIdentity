@@ -94,6 +94,8 @@ namespace IdentityTapsiDoc.Identity.Infra.Data.Command.Users
                 ];
 
                 _= smsIr.VerifySendAsync(phoneNumber, templateId, verifySendParameters);
+                this.redisManager.Create(phoneNumber, rand.ToString(), TimeSpan.FromMinutes(3));
+
                 return true;
                 // Model model = new()
                 // {
