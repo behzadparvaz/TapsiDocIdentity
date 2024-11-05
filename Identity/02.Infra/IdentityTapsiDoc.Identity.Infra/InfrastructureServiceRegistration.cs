@@ -27,6 +27,29 @@ public static class InfrastructureServiceRegistration
         var connectionString =
             configurationManager.GetConnectionString("IdentityServerConnection") ??
             throw new NullReferenceException("CONNECTION STRING NOT FOUND");
+        
+        services.Configure<IdentityOptions>(option =>
+        {
+            option.Password = new PasswordOptions()
+            {
+                RequireDigit = true,
+                RequireLowercase = true,
+                RequireNonAlphanumeric = false,
+                RequireUppercase = true,
+                RequiredLength = 8,
+                RequiredUniqueChars = 1
+            };
+
+            //Lokout Setting
+            option.Lockout.MaxFailedAccessAttempts = 3;
+            option.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMilliseconds(3);
+
+            //SignIn Setting
+            option.SignIn.RequireConfirmedAccount = false;
+            option.SignIn.RequireConfirmedEmail = false;
+            option.SignIn.RequireConfirmedPhoneNumber = false;
+
+        });
 
         services.AddAuthentication(options =>
         {
@@ -45,31 +68,12 @@ public static class InfrastructureServiceRegistration
                 ValidateIssuerSigningKey = true,
                 ClockSkew = TimeSpan.Zero,
                 IssuerSigningKeys = ApplicationTokens.Tokens.Values,
-                ValidIssuer = "http://localhost:35200",
+                ValidIssuer = configurationManager["ValidIssuer"],
                 ValidAudiences = ApplicationTokens.Tokens.Keys
             };
         });
 
-        services.AddIdentity<User, Role>(options =>
-        {
-            options.Stores.MaxLengthForKeys = 36;
-            options.SignIn.RequireConfirmedEmail = false;
-            options.SignIn.RequireConfirmedPhoneNumber = false;
-            //Password Setting
-            options.Password.RequireDigit = false;
-            options.Password.RequireLowercase = false;
-            options.Password.RequireNonAlphanumeric = false;
-            options.Password.RequireUppercase = false;
-            options.Password.RequiredLength = 3;
-            options.Password.RequiredUniqueChars = 1;
-            //Lokout Setting
-            options.Lockout.MaxFailedAccessAttempts = 3;
-            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMilliseconds(3);
-            //SignIn Setting
-            options.SignIn.RequireConfirmedAccount = false;
-            options.SignIn.RequireConfirmedEmail = false;
-            options.SignIn.RequireConfirmedPhoneNumber = false;
-        })
+        services.AddIdentity<User, Role>()
        .AddEntityFrameworkStores<DataBaseContext>()
        .AddDefaultTokenProviders();
 

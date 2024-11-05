@@ -29,6 +29,7 @@ builder.Services.AddDbContext<DataBaseContext>(
     p => p.UseSqlServer(builder.Configuration.GetSection("Connection:ConnectionString").Value));
 
 builder.Services.AddInfrastructureServices(builder.Configuration);
+
 builder.Services.AddSingleton(typeof(IRedisClientsManager),
     new RedisManagerPool(builder.Configuration.GetSection("Redis:RedisConnectionString").Value));
 
@@ -85,27 +86,47 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var allowedOrigins= builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+var policyName = builder.Configuration.GetSection("Cors:Name").Value;
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(policyName!, policy =>
+    {
+        if (builder.Environment.IsDevelopment())
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        }
+        else
+        {
+            policy.WithOrigins(allowedOrigins!)
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        }
+    });
+});
+
 var app = builder.Build();
 
 app.UseRateLimiter();
 
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
 app.UseSwagger();
 app.UseSwaggerUI();
-//}
+
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Append("X-Frame-Options", "DENY");
+    await next();
+});
 
 //app.UseHttpsRedirection();
 app.UseIdentityServer();
 app.UseAuthorization();
 app.UseAuthentication();
 app.MapControllers();
-app.UseCors(x => x
-       .AllowAnyMethod()
-       .AllowAnyHeader()
-       .SetIsOriginAllowed(origin => true)
-       .AllowCredentials());
+app.UseCors(policyName!);
 
 //(new DatabaseInit()).InitializeDatabase(app);
 app.Run();
